@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-manrope), sans-serif;
+  background: #ffffff;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  text-decoration: none;
+}
