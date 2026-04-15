@@ -113,8 +113,7 @@ export function HeaderCartDrawer() {
                 Your cart is empty
               </p>
               <p className="mt-2 text-sm leading-7 text-slate-600">
-                Add a few mocked SKUs from the featured products section to test
-                the storefront flow.
+                Add products from the store to review your selections here.
               </p>
             </div>
           ) : (
@@ -161,11 +160,10 @@ export function HeaderCartDrawer() {
             </span>
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-500">
-            Checkout will be handled later by Shopify. This drawer is only for
-            mocked add-to-cart behaviour and cart counts.
+            Review your selected items, quantities, and subtotal here.
           </p>
           <Link
-            href="#featured-products"
+            href="/#featured-products"
             onClick={closeCart}
             className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
           >

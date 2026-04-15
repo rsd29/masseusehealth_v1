@@ -1,14 +1,6 @@
 import Link from "next/link";
 
-import { AddToCartButton } from "@/components/add-to-cart-button";
-import {
-  bundleHighlights,
-  collectionCards,
-  featuredProducts,
-  proofLogos,
-  resourceLinks,
-  testimonials,
-} from "@/lib/site-content";
+import { bundleHighlights, featuredProducts, proofLogos, testimonials } from "@/lib/site-content";
 
 function SectionHeading({
   id,
@@ -61,31 +53,31 @@ export function HomePage() {
               Masseuse Health Co.
             </p>
             <h1 className="mt-6 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
-              Build your at-home recovery ritual around premium ice baths and saunas.
+              Daily rituals. Proven results.
             </h1>
             <p className="mt-6 text-lg leading-8 text-slate-600">
-              This mock homepage mirrors the structure of a premium recovery
-              e-commerce brand, with section-first merchandising and a header
-              ready for a broader Shopify catalogue of cold and heat therapy products.
+              Backed by research, trusted by pros, and designed for modern living,
+              our ice baths and saunas help you recover deeper, think clearer, and
+              feel better with every session.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <span
+                className="inline-flex cursor-not-allowed select-none items-center justify-center rounded-full border border-slate-200 px-6 py-3.5 text-sm font-medium text-slate-400 opacity-60"
+                aria-disabled="true"
+              >
+                Explore Ice Baths
+              </span>
               <Link
-                href="#featured-products"
+                href={featuredProducts[1]?.href ?? "#featured-products"}
                 className="inline-flex items-center justify-center rounded-full bg-slate-950 px-6 py-3.5 text-sm font-medium text-white transition hover:bg-slate-800"
               >
-                Shop featured products
-              </Link>
-              <Link
-                href="#collections"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 px-6 py-3.5 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-950"
-              >
-                Browse collections
+                Explore Saunas
               </Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-500">
-              <span>Premium layout direction</span>
-              <span>Headless-ready content model</span>
-              <span>No final product imagery required yet</span>
+              <span>Backed by research</span>
+              <span>Trusted by pros</span>
+              <span>30,000+ happy customers</span>
             </div>
           </div>
 
@@ -97,22 +89,22 @@ export function HomePage() {
                   <div className="flex h-full min-h-80 flex-col justify-between rounded-[1.5rem] border border-white/10 bg-white/5 p-6">
                     <div>
                       <p className="text-xs uppercase tracking-[0.3em] text-white/55">
-                        Hero product block
+                        Shop now
                       </p>
                       <h2 className="mt-4 max-w-sm text-3xl font-semibold">
-                        Recovery Plunge Pro
+                        Everglow Infrared
                       </h2>
                       <p className="mt-4 max-w-sm text-sm leading-7 text-white/75">
-                        Stand-in visual panel for final photography, motion or 3D
-                        product renders across your hero recovery products.
+                        Premium certified Canadian red cedar, therapeutic infrared
+                        heat, and intelligent controls for home recovery spaces.
                       </p>
                     </div>
                     <div className="grid grid-cols-2 gap-3 text-sm text-white/70">
                       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        Chiller-ready setup
+                        From $4,477
                       </div>
                       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        Premium insulated build
+                        55% off
                       </div>
                     </div>
                   </div>
@@ -121,81 +113,29 @@ export function HomePage() {
                 <div className="grid gap-5">
                   <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
                     <p className="text-xs uppercase tracking-[0.28em] text-slate-400">
-                      Merchandising
+                      Trusted by Australians
                     </p>
                     <h3 className="mt-3 text-2xl font-semibold text-slate-950">
-                      Campaign-ready card layout
+                      For over 17 years
                     </h3>
                     <p className="mt-3 text-sm leading-7 text-slate-600">
-                      Flexible enough for promo banners, quick offers and launch
-                      messaging without redesigning the hero.
+                      We bring premium recovery tools into Australian homes with a
+                      focus on quality, care, and long-term performance.
                     </p>
                   </div>
                   <div className="rounded-[2rem] border border-slate-200 bg-white p-6">
                     <p className="text-xs uppercase tracking-[0.28em] text-slate-400">
-                      Shopify preparation
+                      Why Masseuse Health Co.
                     </p>
                     <p className="mt-3 text-sm leading-7 text-slate-600">
-                      Product cards, navigation groups and homepage blocks are
-                      all driven from structured data so they can be replaced by
-                      headless CMS queries later.
+                      Australian-owned, backed by warranty, and supported for life
+                      so customers can build a recovery ritual with confidence.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section aria-label="Featured press" className="border-y border-black/5 bg-white">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-12 gap-y-6 px-4 py-8 sm:px-6 lg:px-8">
-          {proofLogos.map((logo) => (
-            <p
-              key={logo}
-              className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-400"
-            >
-              {logo}
-            </p>
-          ))}
-        </div>
-      </section>
-
-      <section
-        id="collections"
-        aria-labelledby="collections-heading"
-        className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"
-      >
-        <SectionHeading
-          id="collections-heading"
-          eyebrow="Collections"
-          title="A homepage structure built around clear shopping entry points"
-          description="The competitor site uses category-led merchandising early on. This version translates that approach into ice bath and sauna collections that suit Masseuse Health Co."
-        />
-
-        <div className="mt-12 grid gap-6 lg:grid-cols-4">
-          {collectionCards.map((card) => (
-            <article
-              key={card.title}
-              className="group rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">
-                {card.eyebrow}
-              </p>
-              <h3 className="mt-5 text-2xl font-semibold tracking-tight text-slate-950">
-                {card.title}
-              </h3>
-              <p className="mt-4 text-sm leading-7 text-slate-600">
-                {card.description}
-              </p>
-              <Link
-                href={card.href}
-                className="mt-8 inline-flex text-sm font-medium text-slate-950"
-              >
-                Explore section
-              </Link>
-            </article>
-          ))}
         </div>
       </section>
 
@@ -207,20 +147,20 @@ export function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <SectionHeading
             id="featured-products-heading"
-            eyebrow="Featured products"
-            title="Merchandise hero products in a premium card grid"
-            description="This area mirrors the competitor's featured product block, but uses simpler placeholders and cleaner copy so you can swap in real Shopify products later."
+            eyebrow="Shop now"
+            title="Shop now"
+            description="Premium recovery essentials designed for modern homes, everyday rituals, and long-term wellbeing."
           />
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
             {featuredProducts.map((product) => (
               <article
                 key={product.name}
                 className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm"
               >
                 <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,_#e2e8f0,_#f8fafc)] p-6">
-                  <div className="flex min-h-56 items-end rounded-[1.25rem] border border-dashed border-slate-300 bg-white/55 p-5">
-                    <p className="text-sm text-slate-500">Product image placeholder</p>
+                  <div className="flex min-h-56 items-end rounded-[1.25rem] border border-slate-200 bg-white/55 p-5">
+                    <p className="text-sm text-slate-500">Daily rituals. Proven results.</p>
                   </div>
                 </div>
                 <div className="mt-5 flex items-start justify-between gap-4">
@@ -243,17 +183,21 @@ export function HomePage() {
                   ))}
                 </ul>
                 <div className="mt-6 flex gap-3">
-                  <AddToCartButton
-                    sku={product.sku}
-                    name={product.name}
-                    price={product.price}
-                  />
-                  <Link
-                    href={product.href}
-                    className="inline-flex rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
-                  >
-                    Learn more
-                  </Link>
+                  {product.href && !product.learnMoreDisabled ? (
+                    <Link
+                      href={product.href}
+                      className="inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+                    >
+                      Shop now
+                    </Link>
+                  ) : (
+                    <span
+                      className="inline-flex cursor-not-allowed select-none rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-400 opacity-80"
+                      aria-disabled="true"
+                    >
+                      Shop now
+                    </span>
+                  )}
                 </div>
               </article>
             ))}
@@ -262,26 +206,117 @@ export function HomePage() {
       </section>
 
       <section
-        id="bundles"
-        aria-labelledby="bundles-heading"
+        id="about-us"
+        aria-labelledby="about-us-heading"
         className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"
       >
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
+              Trusted by Australians for over 17 years.
+            </p>
+            <h2
+              id="about-us-heading"
+              className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl"
+            >
+              Trusted by Australians for over 17 years.
+            </h2>
+            <p className="mt-6 text-base leading-7 text-slate-600">
+              Masseuse Health Co. is redefining recovery with science-backed tools
+              designed for modern living. From ice baths to infrared saunas, we
+              create products that look as good as they feel, helping you recover
+              faster, think clearer, and live stronger.
+            </p>
+            <p className="mt-4 text-base leading-7 text-slate-600">
+              With over 17 years of experience through our parent brand, Masseuse
+              Massage Chairs, we&apos;re trusted by thousands of Australians for
+              quality, innovation, and care. Now, we&apos;re bringing that legacy
+              into the next era of wellness: practical, premium, and built to last.
+            </p>
+            <span
+              className="mt-8 inline-flex cursor-not-allowed select-none rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white opacity-85"
+              aria-disabled="true"
+            >
+              About us
+            </span>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {proofLogos.map((logo) => (
+              <div
+                key={logo}
+                className="rounded-[1.75rem] border border-slate-200 bg-slate-50 px-5 py-10 text-center text-sm font-semibold uppercase tracking-[0.22em] text-slate-400"
+              >
+                {logo}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="editorial-heading"
+        className="bg-white"
+      >
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div className="rounded-[2.5rem] bg-[linear-gradient(135deg,_#dbeafe,_#e2e8f0,_#f8fafc)] p-8 shadow-sm">
+              <div className="min-h-96 rounded-[2rem] border border-white/50 bg-white/40" />
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
+                Editorial
+              </p>
+              <h2
+                id="editorial-heading"
+                className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl"
+              >
+                Blake Acres: Recovery on His Own Terms
+              </h2>
+              <p className="mt-6 text-base leading-7 text-slate-600">
+                In the high-intensity world of professional AFL, recovery isn&apos;t
+                optional, it&apos;s a competitive advantage. For Carlton Blues
+                midfielder Blake Acres, maintaining peak performance means creating
+                a recovery environment that works as hard as he does.
+              </p>
+              <p className="mt-4 text-base leading-7 text-slate-600">
+                The demands of training, travel, and game-day intensity are
+                relentless, but Blake has found a way to stay one step ahead by
+                bringing professional-grade recovery into his own home.
+              </p>
+              <span
+                className="mt-8 inline-flex cursor-not-allowed select-none rounded-full border border-slate-300 px-5 py-3 text-sm font-medium text-slate-500"
+                aria-disabled="true"
+              >
+                Read more
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="why-masseuse"
+        aria-labelledby="why-masseuse-heading"
+        className="bg-slate-50"
+      >
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <SectionHeading
-            id="bundles-heading"
-            eyebrow="Bundles"
-            title="Reserve space for high-value bundle storytelling"
-            description="The competitor leans heavily on bundled wellness outcomes. This block gives you the same conversion pattern for chair-and-device offers."
+            id="why-masseuse-heading"
+            eyebrow="Why Masseuse Health Co.?"
+            title="Why Masseuse Health Co.?"
+            description="Australian-owned. Trusted for over 18 years."
           />
 
-          <div className="grid gap-4">
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
             {bundleHighlights.map((bundle) => (
               <article
                 key={bundle.title}
-                className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
+                className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm"
               >
                 <h3 className="text-xl font-semibold text-slate-950">{bundle.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
+                <p className="mt-4 text-sm leading-7 text-slate-600">
                   {bundle.description}
                 </p>
               </article>
@@ -298,18 +333,18 @@ export function HomePage() {
           <SectionHeading
             id="social-proof-heading"
             eyebrow="Social proof"
-            title="Customer trust and review content can sit lower on the page"
-            description="This keeps the same rhythm as the reference site: top merchandising first, validation second."
+            title="Trusted by 30,000+ Happy Customers"
+            description="Real reviews from customers using Masseuse Health Co. as part of their recovery routine."
             invert
           />
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {testimonials.map((testimonial) => (
               <blockquote
                 key={testimonial.author}
                 className="rounded-[2rem] border border-white/10 bg-white/5 p-6"
               >
-                <p className="text-lg leading-8 text-white/88">
+                <p className="text-base leading-7 text-white/88">
                   &ldquo;{testimonial.quote}&rdquo;
                 </p>
                 <footer className="mt-6 text-sm uppercase tracking-[0.24em] text-white/45">
@@ -321,107 +356,41 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="for-business" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="grid gap-10 rounded-[2.5rem] border border-slate-200 bg-slate-50 p-8 lg:grid-cols-[1fr_0.9fr] lg:p-10">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-              For clinics and studios
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Keep a dedicated B2B path in the global navigation
-            </h2>
-            <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">
-              This mirrors the competitor&apos;s commercial entry point and gives you
-              room for wholesale, fit-out and lead generation content.
-            </p>
-            <Link
-              href="#newsletter"
-              className="mt-8 inline-flex rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white"
-            >
-              Request a commercial pack
-            </Link>
-          </div>
-
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.5rem] bg-slate-100 p-5">
-                <p className="text-sm font-semibold text-slate-950">Spas & clinics</p>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  Multi-unit enquiries, setup guidance and commercial warranties.
-                </p>
-              </div>
-              <div className="rounded-[1.5rem] bg-slate-100 p-5">
-                <p className="text-sm font-semibold text-slate-950">Hotels & gyms</p>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  Premium wellness zones and member experience upgrades.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="resources"
-        aria-labelledby="resources-heading"
-        className="bg-white"
-      >
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <SectionHeading
-            id="resources-heading"
-            eyebrow="Resources"
-            title="Leave room for editorial and support content in the information architecture"
-            description="The reference site balances commerce with education. This section gives your future CMS-driven articles and FAQs a clear homepage destination."
-          />
-
-          <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {resourceLinks.map((item) => (
-              <Link
-                key={item}
-                href="#"
-                className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-5 py-5 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-white"
-              >
-                {item}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="newsletter" className="bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="rounded-[2.5rem] bg-white p-8 shadow-sm lg:flex lg:items-center lg:justify-between lg:gap-10 lg:p-10">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-                Email capture
+                Everyday recovery, reimagined.
               </p>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                Finish the homepage with a simple acquisition block
+                Science-backed wellness tools for modern living.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-600">
-                This is the right place for launch updates, educational content
-                opt-ins or early access signup before real Shopify flows are
-                connected.
+                Sign up for offers and wellness tips from Masseuse Health Co.,
+                designed around modern recovery routines and everyday wellbeing.
               </p>
             </div>
 
-            <form className="mt-8 flex w-full max-w-xl flex-col gap-3 lg:mt-0 lg:flex-row">
+            <div className="mt-8 flex w-full max-w-xl flex-col gap-3 lg:mt-0 lg:flex-row">
               <label htmlFor="email" className="sr-only">
                 Email address
               </label>
               <input
                 id="email"
                 type="email"
-                placeholder="Enter your email"
-                className="min-h-12 flex-1 rounded-full border border-slate-300 px-5 text-sm text-slate-950 outline-none ring-0 transition placeholder:text-slate-400 focus:border-slate-950"
+                placeholder="Email address"
+                readOnly
+                className="min-h-12 flex-1 cursor-not-allowed rounded-full border border-slate-300 px-5 text-sm text-slate-950 outline-none ring-0 placeholder:text-slate-400"
               />
               <button
-                type="submit"
-                className="min-h-12 rounded-full bg-slate-950 px-6 text-sm font-medium text-white transition hover:bg-slate-800"
+                type="button"
+                disabled
+                className="min-h-12 cursor-not-allowed rounded-full bg-slate-950 px-6 text-sm font-medium text-white opacity-80"
               >
-                Join now
+                Subscribe
               </button>
-            </form>
+            </div>
           </div>
         </div>
       </section>

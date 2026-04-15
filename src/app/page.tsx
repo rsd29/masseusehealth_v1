@@ -4,12 +4,12 @@ import Script from "next/script";
 import { HomePage } from "@/components/home-page";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { featuredProducts, siteConfig } from "@/lib/site-content";
+import { everglowInfraredSaunaPath, featuredProducts, siteConfig } from "@/lib/site-content";
 
 export const metadata: Metadata = {
-  title: "Ice Baths and Saunas",
+  title: "Daily rituals. Proven results.",
   description:
-    "Shop premium ice baths, saunas and recovery accessories from Masseuse Health Co. in a fast, SEO-friendly storefront foundation.",
+    "Backed by research, trusted by pros — unlock deeper recovery, sharper focus, and lasting wellbeing with every session.",
 };
 
 export default function Page() {
@@ -44,7 +44,10 @@ export default function Page() {
         priceCurrency: "AUD",
         price: product.price.replace(/[^0-9.]/g, ""),
         availability: "https://schema.org/InStock",
-        url: `${siteConfig.baseUrl}/#featured-products`,
+        url:
+          product.href === everglowInfraredSaunaPath
+            ? `${siteConfig.baseUrl}${everglowInfraredSaunaPath}`
+            : `${siteConfig.baseUrl}/#featured-products`,
       },
     })),
   };
