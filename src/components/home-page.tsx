@@ -1,6 +1,19 @@
+import Image from "next/image";
+import { Questrial } from "next/font/google";
 import Link from "next/link";
 
-import { bundleHighlights, featuredProducts, proofLogos, testimonials } from "@/lib/site-content";
+import {
+  bundleHighlights,
+  everglowInfraredSaunaPath,
+  featuredProducts,
+  proofLogos,
+  testimonials,
+} from "@/lib/site-content";
+
+const questrial = Questrial({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 function SectionHeading({
   id,
@@ -46,94 +59,46 @@ function SectionHeading({
 export function HomePage() {
   return (
     <main id="main-content">
-      <section className="overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.95),_rgba(226,232,240,0.85),_rgba(203,213,225,0.92))]">
-        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-24">
-          <div className="max-w-xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-slate-500">
-              Masseuse Health Co.
-            </p>
-            <h1 className="mt-6 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
-              Daily rituals. Proven results.
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-slate-600">
-              Backed by research, trusted by pros, and designed for modern living,
-              our ice baths and saunas help you recover deeper, think clearer, and
-              feel better with every session.
-            </p>
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <span
-                className="inline-flex cursor-not-allowed select-none items-center justify-center rounded-full border border-slate-200 px-6 py-3.5 text-sm font-medium text-slate-400 opacity-60"
-                aria-disabled="true"
-              >
-                Explore Ice Baths
-              </span>
-              <Link
-                href={featuredProducts[1]?.href ?? "#featured-products"}
-                className="inline-flex items-center justify-center rounded-full bg-slate-950 px-6 py-3.5 text-sm font-medium text-white transition hover:bg-slate-800"
-              >
-                Explore Saunas
-              </Link>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-500">
-              <span>Backed by research</span>
-              <span>Trusted by pros</span>
-              <span>30,000+ happy customers</span>
-            </div>
+      <section className="overflow-hidden">
+        <div className="relative min-h-screen w-full">
+          <Image
+            src="/images/hero-sauna.png"
+            alt="Everglow infrared sauna in a bright interior"
+            fill
+            priority
+            quality={100}
+            sizes="100vw"
+            unoptimized
+            className="object-cover"
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
+          <div className="pointer-events-none absolute bottom-4 right-4 z-10 sm:bottom-6 sm:right-6 lg:bottom-8 lg:right-8">
+            <Image
+              src="/assets/masseuse-health-logo-mark.png"
+              alt=""
+              width={180}
+              height={180}
+              priority
+              aria-hidden="true"
+              className="hero-mark-enter h-20 w-20 object-contain brightness-0 opacity-35 sm:h-28 sm:w-28 lg:h-40 lg:w-40"
+            />
           </div>
-
-          <div className="relative">
-            <div className="absolute inset-x-[10%] bottom-0 top-12 rounded-[2.75rem] bg-white/55 blur-3xl" />
-            <div className="relative rounded-[2.75rem] border border-white/60 bg-white/60 p-5 shadow-[0_35px_100px_rgba(15,23,42,0.16)] backdrop-blur">
-              <div className="grid gap-5 md:grid-cols-[1.25fr_0.75fr]">
-                <div className="rounded-[2rem] bg-[linear-gradient(135deg,_#0f172a,_#1e293b,_#475569)] p-8 text-white">
-                  <div className="flex h-full min-h-80 flex-col justify-between rounded-[1.5rem] border border-white/10 bg-white/5 p-6">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.3em] text-white/55">
-                        Shop now
-                      </p>
-                      <h2 className="mt-4 max-w-sm text-3xl font-semibold">
-                        Everglow Infrared
-                      </h2>
-                      <p className="mt-4 max-w-sm text-sm leading-7 text-white/75">
-                        Premium certified Canadian red cedar, therapeutic infrared
-                        heat, and intelligent controls for home recovery spaces.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 text-sm text-white/70">
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        From $4,477
-                      </div>
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        55% off
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid gap-5">
-                  <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
-                    <p className="text-xs uppercase tracking-[0.28em] text-slate-400">
-                      Trusted by Australians
-                    </p>
-                    <h3 className="mt-3 text-2xl font-semibold text-slate-950">
-                      For over 17 years
-                    </h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">
-                      We bring premium recovery tools into Australian homes with a
-                      focus on quality, care, and long-term performance.
-                    </p>
-                  </div>
-                  <div className="rounded-[2rem] border border-slate-200 bg-white p-6">
-                    <p className="text-xs uppercase tracking-[0.28em] text-slate-400">
-                      Why Masseuse Health Co.
-                    </p>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">
-                      Australian-owned, backed by warranty, and supported for life
-                      so customers can build a recovery ritual with confidence.
-                    </p>
-                  </div>
-                </div>
-              </div>
+          <div className="absolute bottom-6 left-4 z-10 sm:bottom-8 sm:left-6 lg:bottom-10 lg:left-8">
+            <div className="flex flex-col items-start gap-3">
+              <p
+                className={`${questrial.className} max-w-xs text-2xl font-normal leading-none tracking-[-0.035em] text-black sm:max-w-md sm:text-3xl lg:max-w-xl lg:text-5xl`}
+              >
+                Everglow Infrared
+              </p>
+              <Link
+                href={everglowInfraredSaunaPath}
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-[0_10px_24px_rgba(15,23,42,0.18)]"
+              >
+                Experience Real Recovery
+                <span className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">
+                  &rarr;
+                </span>
+              </Link>
             </div>
           </div>
         </div>
@@ -152,7 +117,7 @@ export function HomePage() {
             description="Premium recovery essentials designed for modern homes, everyday rituals, and long-term wellbeing."
           />
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {featuredProducts.map((product) => (
               <article
                 key={product.name}

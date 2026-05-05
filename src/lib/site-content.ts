@@ -57,33 +57,6 @@ export const siteConfig = {
 
 export const navGroups: NavGroup[] = [
   {
-    label: "Ice Baths",
-    href: "#collections",
-    disabled: true,
-    description: "Explore premium ice baths built for daily recovery, performance, and home wellness.",
-    featuredLabel: "Explore ice baths",
-    columns: [
-      {
-        title: "Niseko",
-        href: "#collections",
-        description: "Premium cold immersion for serious daily recovery at home.",
-        disabled: true,
-      },
-      {
-        title: "Plunge",
-        href: "#collections",
-        description: "Compact cold therapy designed for smaller footprints and fast setups.",
-        disabled: true,
-      },
-      {
-        title: "Aspen",
-        href: "#collections",
-        description: "Luxury cold therapy with a refined finish and standout presence.",
-        disabled: true,
-      },
-    ],
-  },
-  {
     label: "Saunas",
     href: "#featured-products",
     disabled: true,
@@ -106,6 +79,33 @@ export const navGroups: NavGroup[] = [
         title: "Everglow Traditional",
         href: "#featured-products",
         description: "Traditional sauna experience for dedicated home wellness zones.",
+        disabled: true,
+      },
+    ],
+  },
+  {
+    label: "Ice Baths",
+    href: "#collections",
+    disabled: true,
+    description: "Explore premium ice baths built for daily recovery, performance, and home wellness.",
+    featuredLabel: "Explore ice baths",
+    columns: [
+      {
+        title: "Niseko",
+        href: "#collections",
+        description: "Premium cold immersion for serious daily recovery at home.",
+        disabled: true,
+      },
+      {
+        title: "Plunge",
+        href: "#collections",
+        description: "Compact cold therapy designed for smaller footprints and fast setups.",
+        disabled: true,
+      },
+      {
+        title: "Aspen",
+        href: "#collections",
+        description: "Luxury cold therapy with a refined finish and standout presence.",
         disabled: true,
       },
     ],
@@ -248,34 +248,6 @@ export const featuredProducts: ProductHighlight[] = [
       "Built-in chromotherapy, ventilation, Bluetooth & tablet control",
     ],
     href: everglowInfraredSaunaPath,
-  },
-  {
-    sku: "MHC-ICE-PLUNGE",
-    category: "Ice Bath",
-    name: "Plunge Ice Bath",
-    price: "From $347",
-    summary:
-      "A simple, accessible cold therapy entry point for customers starting their recovery ritual.",
-    bullets: [
-      "50% off",
-      "Quick setup and easy daily use",
-      "Designed for modern spaces",
-    ],
-    learnMoreDisabled: true,
-  },
-  {
-    sku: "MHC-ICE-ASPEN",
-    category: "Ice Bath",
-    name: "Aspen",
-    price: "From $6,777",
-    summary:
-      "Luxury cold immersion with premium detailing for customers building a standout home setup.",
-    bullets: [
-      "66% off",
-      "Premium finish and elevated presence",
-      "Built to last and backed by warranty",
-    ],
-    learnMoreDisabled: true,
   },
 ];
 

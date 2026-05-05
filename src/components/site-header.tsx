@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,12 +13,14 @@ import { navGroups, type NavColumn, type NavGroup } from "@/lib/site-content";
 
 const disabledLinkClass =
   "cursor-not-allowed text-slate-400 opacity-60 pointer-events-none select-none";
+const COMPACT_SCROLL_START = 72;
+const COMPACT_SCROLL_END = 28;
 
-function LogoMark() {
+function LogoMark({ compact = false }: { compact?: boolean }) {
   return (
     <Link
       href="/"
-      className="inline-flex items-center"
+      className="relative inline-flex h-11 w-[124px] items-center sm:w-[136px]"
       aria-label="Masseuse Health Co. home"
     >
       <Image
@@ -23,7 +29,19 @@ function LogoMark() {
         width={245}
         height={81}
         priority
-        className="h-10 w-auto sm:h-11"
+        className={`absolute left-0 top-1/2 h-10 w-auto -translate-y-1/2 transform-gpu transition-opacity duration-200 ease-out will-change-opacity sm:h-11 ${
+          compact ? "opacity-0" : "opacity-100"
+        }`}
+      />
+      <Image
+        src="/assets/masseuse-health-logo-mark.png"
+        alt="Masseuse Health Co. mark"
+        width={94}
+        height={94}
+        priority
+        className={`absolute left-0 top-1/2 -translate-y-1/2 object-contain brightness-0 transform-gpu transition-opacity duration-200 ease-out will-change-opacity ${
+          compact ? "h-11 w-11 opacity-100 sm:h-12 sm:w-12" : "h-9 w-9 opacity-0 sm:h-10 sm:w-10"
+        }`}
       />
     </Link>
   );
@@ -53,16 +71,23 @@ function ColumnLink({ column }: { column: NavColumn }) {
   );
 }
 
-function GroupLabel({ group }: { group: NavGroup }) {
-  const className =
-    "inline-flex items-center gap-2 py-5 text-base font-semibold transition focus:text-slate-950";
+function GroupLabel({
+  group,
+  compact = false,
+}: {
+  group: NavGroup;
+  compact?: boolean;
+}) {
+  const className = `inline-flex items-center gap-2 text-base font-semibold transition focus:text-slate-950 ${
+    compact ? "py-2.5" : "py-4"
+  }`;
 
   if (group.disabled) {
     return (
-      <span className={`${className} cursor-default text-slate-500`}>
+      <span className={`${className} cursor-default text-slate-700`}>
         {group.label}
         {group.columns ? (
-          <span className="text-sm text-slate-400">+</span>
+          <span className="text-sm text-slate-500">+</span>
         ) : null}
       </span>
     );
@@ -71,10 +96,10 @@ function GroupLabel({ group }: { group: NavGroup }) {
   return (
     <Link
       href={group.href}
-      className={`${className} text-slate-700 hover:text-slate-950`}
+      className={`${className} text-slate-900 hover:text-slate-950`}
     >
       {group.label}
-      {group.columns ? <span className="text-sm text-slate-400">+</span> : null}
+      {group.columns ? <span className="text-sm text-slate-500">+</span> : null}
     </Link>
   );
 }
@@ -106,12 +131,12 @@ function FeaturedCta({ group }: { group: NavGroup }) {
 
 function MegaMenu({ group }: { group: NavGroup }) {
   return (
-    <div className="absolute left-0 top-full z-40 w-[44rem] pt-4 opacity-0 invisible translate-y-2 transition-all duration-200 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+    <div className="absolute left-0 top-full z-40 w-[44rem] pt-2 opacity-0 invisible translate-y-1 transition-all duration-200 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
       <div
-        className="absolute left-6 top-[-0.9rem] h-5 w-32 bg-transparent [clip-path:polygon(50%_0,0_100%,100%_100%)]"
+        className="absolute left-6 top-[-0.55rem] h-4 w-32 bg-transparent [clip-path:polygon(50%_0,0_100%,100%_100%)]"
         aria-hidden="true"
       />
-      <div className="absolute left-0 top-[-1.1rem] h-6 w-72 bg-transparent" aria-hidden="true" />
+      <div className="absolute left-0 top-[-0.75rem] h-4 w-72 bg-transparent" aria-hidden="true" />
       <div className="pointer-events-auto rounded-3xl border border-black/5 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
         <div className="grid gap-4 md:grid-cols-[1.3fr_1fr]">
           <div className="grid gap-3 sm:grid-cols-2">
@@ -136,9 +161,9 @@ function MegaMenu({ group }: { group: NavGroup }) {
 function MegaMenuBridge() {
   return (
     <>
-      <div className="absolute left-0 top-full z-30 h-5 w-72 bg-transparent" aria-hidden="true" />
+      <div className="absolute left-0 top-full z-30 h-3 w-72 bg-transparent" aria-hidden="true" />
       <div
-        className="absolute left-6 top-[calc(100%+0.05rem)] z-30 h-6 w-36 bg-transparent [clip-path:polygon(50%_0,0_100%,100%_100%)]"
+        className="absolute left-6 top-[calc(100%+0.02rem)] z-30 h-4 w-36 bg-transparent [clip-path:polygon(50%_0,0_100%,100%_100%)]"
         aria-hidden="true"
       />
     </>
@@ -146,18 +171,55 @@ function MegaMenuBridge() {
 }
 
 export function SiteHeader() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const isScrolledRef = useRef(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const nextScrollY = window.scrollY;
+      const shouldCompact = isScrolledRef.current
+        ? nextScrollY > COMPACT_SCROLL_END
+        : nextScrollY > COMPACT_SCROLL_START;
+
+      if (shouldCompact !== isScrolledRef.current) {
+        isScrolledRef.current = shouldCompact;
+        setIsScrolled(shouldCompact);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-8 px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-14">
-            <LogoMark />
+      <header
+        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+          isScrolled
+            ? "border-black/8 bg-white/50 shadow-[0_10px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl"
+            : "border-transparent bg-white"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 transition-all duration-300 sm:px-6 lg:px-8 ${
+            isScrolled ? "py-2.5" : "py-4"
+          }`}
+        >
+          <div className="flex min-w-0 items-center gap-10 lg:gap-14">
+            <LogoMark compact={isScrolled} />
 
             <nav className="hidden lg:block" aria-label="Primary navigation">
               <ul className="flex items-center gap-8">
                 {navGroups.map((group) => (
-                  <li key={group.label} className="group relative pb-5 -mb-5">
-                    <GroupLabel group={group} />
+                  <li
+                    key={group.label}
+                    className={`group relative transition-all duration-300 ${
+                      isScrolled ? "pb-2.5 -mb-2.5" : "pb-4 -mb-4"
+                    }`}
+                  >
+                    <GroupLabel group={group} compact={isScrolled} />
 
                     {group.columns ? (
                       <>
@@ -171,11 +233,11 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden shrink-0 items-center gap-3 lg:flex">
             <HeaderCartButton />
           </div>
 
-          <div className="flex items-center gap-3 lg:hidden">
+          <div className="flex shrink-0 items-center gap-3 lg:hidden">
             <HeaderCartButton mobile />
 
             <details className="group w-full max-w-48">

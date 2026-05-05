@@ -5,13 +5,51 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
   min-height: 100vh;
   font-family: var(--font-manrope), sans-serif;
   background: #ffffff;
+}
+
+html,
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+.lenis.lenis-autoToggle {
+  transition-property: overflow;
+  transition-duration: 1ms;
+  transition-behavior: allow-discrete;
 }
 
 summary::-webkit-details-marker {
@@ -27,4 +65,20 @@ select {
 
 a {
   text-decoration: none;
+}
+
+.hero-mark-enter {
+  animation: hero-mark-enter 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-mark-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.94);
+  }
+
+  to {
+    opacity: 0.7;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
