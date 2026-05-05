@@ -57,7 +57,7 @@ export const siteConfig = {
 
 export const navGroups: NavGroup[] = [
   {
-    label: "Saunas",
+    label: "Saunass",
     href: "#featured-products",
     disabled: true,
     featuredHref: everglowInfraredSaunaPath,

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useLenis } from "lenis/react";
 
 import {
   HeaderCartButton,
@@ -81,12 +82,13 @@ function GroupLabel({
   const className = `inline-flex items-center gap-2 text-base font-semibold transition focus:text-slate-950 ${
     compact ? "py-2.5" : "py-4"
   }`;
+  const showDropdownIndicator = group.columns && group.label !== "Saunass";
 
   if (group.disabled) {
     return (
       <span className={`${className} cursor-default text-slate-700`}>
         {group.label}
-        {group.columns ? (
+        {showDropdownIndicator ? (
           <span className="text-sm text-slate-500">+</span>
         ) : null}
       </span>
@@ -99,7 +101,7 @@ function GroupLabel({
       className={`${className} text-slate-900 hover:text-slate-950`}
     >
       {group.label}
-      {group.columns ? <span className="text-sm text-slate-500">+</span> : null}
+      {showDropdownIndicator ? <span className="text-sm text-slate-500">+</span> : null}
     </Link>
   );
 }
@@ -174,24 +176,31 @@ export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const isScrolledRef = useRef(false);
 
+  const updateScrolledState = useCallback((nextScrollY: number) => {
+    const shouldCompact = isScrolledRef.current
+      ? nextScrollY > COMPACT_SCROLL_END
+      : nextScrollY > COMPACT_SCROLL_START;
+
+    if (shouldCompact !== isScrolledRef.current) {
+      isScrolledRef.current = shouldCompact;
+      setIsScrolled(shouldCompact);
+    }
+  }, []);
+
+  useLenis((lenis) => {
+    updateScrolledState(lenis.scroll);
+  });
+
   useEffect(() => {
     const handleScroll = () => {
-      const nextScrollY = window.scrollY;
-      const shouldCompact = isScrolledRef.current
-        ? nextScrollY > COMPACT_SCROLL_END
-        : nextScrollY > COMPACT_SCROLL_START;
-
-      if (shouldCompact !== isScrolledRef.current) {
-        isScrolledRef.current = shouldCompact;
-        setIsScrolled(shouldCompact);
-      }
+      updateScrolledState(window.scrollY);
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [updateScrolledState]);
 
   return (
     <>
@@ -203,37 +212,37 @@ export function SiteHeader() {
         }`}
       >
         <div
-          className={`mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 transition-all duration-300 sm:px-6 lg:px-8 ${
+          className={`mx-auto flex w-full items-center justify-between gap-6 px-4 transition-all duration-300 sm:px-6 lg:grid lg:max-w-none lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:px-8 2xl:max-w-[1600px] ${
             isScrolled ? "py-2.5" : "py-4"
           }`}
         >
-          <div className="flex min-w-0 items-center gap-10 lg:gap-14">
+          <div className="flex min-w-0 items-center lg:justify-self-start">
             <LogoMark compact={isScrolled} />
-
-            <nav className="hidden lg:block" aria-label="Primary navigation">
-              <ul className="flex items-center gap-8">
-                {navGroups.map((group) => (
-                  <li
-                    key={group.label}
-                    className={`group relative transition-all duration-300 ${
-                      isScrolled ? "pb-2.5 -mb-2.5" : "pb-4 -mb-4"
-                    }`}
-                  >
-                    <GroupLabel group={group} compact={isScrolled} />
-
-                    {group.columns ? (
-                      <>
-                        <MegaMenuBridge />
-                        <MegaMenu group={group} />
-                      </>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            </nav>
           </div>
 
-          <div className="hidden shrink-0 items-center gap-3 lg:flex">
+          <nav className="hidden justify-self-center lg:block" aria-label="Primary navigation">
+            <ul className="flex items-center gap-8">
+              {navGroups.map((group) => (
+                <li
+                  key={group.label}
+                  className={`group relative transition-all duration-300 ${
+                    isScrolled ? "pb-2.5 -mb-2.5" : "pb-4 -mb-4"
+                  }`}
+                >
+                  <GroupLabel group={group} compact={isScrolled} />
+
+                  {group.columns ? (
+                    <>
+                      <MegaMenuBridge />
+                      <MegaMenu group={group} />
+                    </>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="hidden shrink-0 items-center gap-3 justify-self-end lg:flex">
             <HeaderCartButton />
           </div>
 

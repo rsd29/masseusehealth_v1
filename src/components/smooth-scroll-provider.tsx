@@ -1,9 +1,11 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import type { LenisOptions } from "lenis";
-import { ReactLenis } from "lenis/react";
+import { ReactLenis, useLenis } from "lenis/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const lenisOptions: LenisOptions = {
   autoRaf: true,
@@ -19,9 +21,23 @@ const lenisOptions: LenisOptions = {
   stopInertiaOnNavigate: true,
 };
 
+function ScrollTriggerLenisSync() {
+  useLenis(() => {
+    ScrollTrigger.update();
+  });
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.refresh();
+  }, []);
+
+  return null;
+}
+
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   return (
     <ReactLenis root options={lenisOptions}>
+      <ScrollTriggerLenisSync />
       {children}
     </ReactLenis>
   );

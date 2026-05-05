@@ -33,6 +33,26 @@ const CART_STORAGE_KEY = "masseuse-health-mock-cart";
 
 const CartContext = createContext<CartContextValue | null>(null);
 
+function readStoredCart(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    return window.localStorage.getItem(CART_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredCart(items: CartItem[]) {
+  try {
+    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    // Storage can be unavailable in privacy-restricted browser contexts.
+  }
+}
+
 function parseStoredItems(value: string | null): CartItem[] {
   if (!value) {
     return [];
@@ -59,16 +79,12 @@ function parseStoredItems(value: string | null): CartItem[] {
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
-    }
-
-    return parseStoredItems(window.localStorage.getItem(CART_STORAGE_KEY));
+    return parseStoredItems(readStoredCart());
   });
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    writeStoredCart(items);
   }, [items]);
 
   const addItem = useCallback((item: AddCartItemInput) => {
