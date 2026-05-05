@@ -65,7 +65,7 @@ export const navGroups: NavGroup[] = [
     featuredLabel: "Explore saunas",
     columns: [
       {
-        title: "Everglow Infrared",
+        title: "Everglow Infrared Sauna",
         href: everglowInfraredSaunaPath,
         description: "Full-spectrum infrared heat, premium timber construction, and intelligent controls.",
       },
@@ -84,11 +84,11 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
-    label: "Ice Baths",
+    label: "Plunges",
     href: "#collections",
     disabled: true,
-    description: "Explore premium ice baths built for daily recovery, performance, and home wellness.",
-    featuredLabel: "Explore ice baths",
+    description: "Explore premium cold plunges built for daily recovery, performance, and home wellness.",
+    featuredLabel: "Explore plunges",
     columns: [
       {
         title: "Niseko",
@@ -173,10 +173,10 @@ export const navGroups: NavGroup[] = [
 
 export const collectionCards: CollectionCard[] = [
   {
-    eyebrow: "Ice Baths",
+    eyebrow: "Plunges",
     title: "Cold immersion for daily rituals",
     description:
-      "Explore premium ice baths designed to help you recover faster, reset mentally, and build a ritual that lasts.",
+      "Explore premium cold plunges designed to help you recover faster, reset mentally, and build a ritual that lasts.",
     href: "#featured-products",
     exploreDisabled: true,
   },
@@ -209,15 +209,43 @@ export const collectionCards: CollectionCard[] = [
 export const featuredProducts: ProductHighlight[] = [
   {
     sku: "MHC-ICE-NISEKO",
-    category: "Ice Bath",
-    name: "Niseko Ice Bath",
-    price: "From $4,995",
+    category: "Plunge",
+    name: "Niseko",
+    price: "$7,177.00",
     summary:
       "Our premium ice bath range for customers who want serious cold therapy with elevated design.",
     bullets: [
       "45% off",
       "Built for daily recovery routines",
       "Trusted by Australians for over 17 years",
+    ],
+    learnMoreDisabled: true,
+  },
+  {
+    sku: "MHC-ICE-PLUNGE",
+    category: "Plunge",
+    name: "Plunge",
+    price: "$347.00",
+    summary:
+      "Compact cold therapy designed for smaller footprints, fast setups, and daily resets.",
+    bullets: [
+      "50% off",
+      "Smaller-footprint cold immersion",
+      "Designed for daily recovery routines",
+    ],
+    learnMoreDisabled: true,
+  },
+  {
+    sku: "MHC-ICE-ASPEN",
+    category: "Plunge",
+    name: "Aspen",
+    price: "$6,777.00",
+    summary:
+      "Luxury cold therapy with a refined finish and standout presence for home wellness spaces.",
+    bullets: [
+      "66% off",
+      "Premium cold immersion experience",
+      "Built for elevated recovery spaces",
     ],
     learnMoreDisabled: true,
   },
@@ -237,9 +265,9 @@ export const featuredProducts: ProductHighlight[] = [
   },
   {
     sku: "MHC-SAUNA-EVERGLOW",
-    category: "Infrared Sauna",
-    name: "Everglow Infrared",
-    price: "$4,477.00",
+    category: "Sauna",
+    name: "Everglow Infrared Sauna",
+    price: "$6,995.00",
     summary:
       "Premium certified Canadian red cedar, therapeutic 65°C infrared heat, and intelligent controls—designed in Australia for home recovery spaces.",
     bullets: [
@@ -248,6 +276,20 @@ export const featuredProducts: ProductHighlight[] = [
       "Built-in chromotherapy, ventilation, Bluetooth & tablet control",
     ],
     href: everglowInfraredSaunaPath,
+  },
+  {
+    sku: "MHC-SAUNA-EVERGLOW-TRADITIONAL",
+    category: "Sauna",
+    name: "Everglow Traditional Sauna",
+    price: "$7,995.00",
+    summary:
+      "Traditional sauna heat for customers who want a classic home wellness ritual.",
+    bullets: [
+      "33% off",
+      "Traditional sauna experience",
+      "Designed for dedicated home wellness zones",
+    ],
+    learnMoreDisabled: true,
   },
 ];
 
@@ -258,13 +300,13 @@ export type EverglowFinishId = "red-cedar-black" | "red-cedar-natural" | "hemloc
 export const everglowProductDetail = {
   sku: "MHC-SAUNA-EVERGLOW",
   /** Short H1-style title used on the live PDP. */
-  title: "Everglow Infrared",
+  title: "Everglow Infrared Sauna",
   metaTitle: "Everglow Infrared Sauna for Recovery",
   category: "Infrared Sauna",
-  compareAtPrice: "$9,995.00",
-  price: "$4,477.00",
-  savingsAmount: "$5,518.00",
-  savingsBanner: "SAVE $5,518.00",
+  compareAtPrice: "$11,995.00",
+  price: "$6,995.00",
+  savingsAmount: "$5,000.00",
+  savingsBanner: "SAVE $5,000.00",
   socialProof: "30,000+ Happy Customers",
   shortDescription:
     "Premium certified Canadian red cedar construction with full-spectrum infrared heat, chromotherapy, active ventilation, Bluetooth audio and tablet control—designed in Australia for serious recovery spaces.",
@@ -587,12 +629,12 @@ export const resourceLinks = [
 ];
 
 export const footerShopLinks = [
-  "Niseko Ice Bath",
-  "Plunge Ice Bath",
-  "Aspen Ice Bath",
-  "Everglow Sauna",
-  "ThermaPod Sauna",
-  "Massage Chairs",
+  "Niseko",
+  "Plunge",
+  "Aspen",
+  "ThermaPod",
+  "Everglow Infrared Sauna",
+  "Everglow Traditional Sauna",
 ];
 
 export const footerSupportLinks = [

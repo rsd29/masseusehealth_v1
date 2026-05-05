@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,6 +11,7 @@ import { testimonials } from "@/lib/site-content";
 
 const featuredStories = testimonials.slice(0, 3);
 const testimonialImageSrc = "/images/testimonial/thermapod%20blake%20acres.png";
+const instagramUrl = "https://www.instagram.com/masseusehealthco/?hl=en";
 
 export function CustomerStoriesSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -106,6 +108,33 @@ export function CustomerStoriesSection() {
               </div>
             </article>
           ))}
+        </div>
+
+        <div className="mt-14 flex justify-center">
+          <Link
+            href={instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-3 rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 hover:shadow-[0_12px_28px_rgba(15,23,42,0.08)]"
+          >
+            Want to see more amazing stories? Follow us on
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-slate-800">
+              <svg
+                viewBox="0 0 24 24"
+                aria-label="Instagram"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="0.7" fill="currentColor" stroke="none" />
+              </svg>
+            </span>
+          </Link>
         </div>
       </div>
     </section>

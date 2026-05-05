@@ -19,7 +19,7 @@ function GalleryColumn() {
     <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
       <div className="aspect-[4/5] overflow-hidden rounded-[2rem] border border-slate-200 bg-[linear-gradient(145deg,_#f1f5f9,_#e2e8f0)] shadow-sm">
         <div className="flex h-full flex-col justify-end p-8">
-          <p className="text-sm font-medium text-slate-500">Everglow Infrared</p>
+          <p className="text-sm font-medium text-slate-500">Everglow Infrared Sauna</p>
           <p className="mt-2 text-xs leading-relaxed text-slate-400">
             Therapeutic 65°C infrared heat, premium timber construction, and intelligent controls.
           </p>

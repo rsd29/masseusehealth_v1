@@ -150,7 +150,7 @@ export function HeroSection({ headingClassName, productHref }: HeroSectionProps)
               <p
                 className={`${headingClassName} max-w-xs ${typography.heroHeading} text-white sm:max-w-md lg:max-w-xl`}
               >
-                Everglow Infrared
+                Everglow Infrared Sauna
               </p>
               <Link
                 href={productHref}
