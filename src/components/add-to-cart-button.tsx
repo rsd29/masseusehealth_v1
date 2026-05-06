@@ -19,22 +19,22 @@ export function AddToCartButton({
 
   if (quantity > 0) {
     return (
-      <div className="inline-flex items-center gap-4 rounded-md bg-slate-950 px-5 py-3 text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
+      <div className="inline-flex items-center gap-2">
         <button
           type="button"
           onClick={() => decrementItem(sku)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-2xl font-semibold leading-none transition hover:bg-white hover:text-slate-950"
+          className="inline-flex h-14 w-14 items-center justify-center rounded-md border border-slate-200 bg-white text-2xl font-semibold leading-none text-slate-950 shadow-sm transition hover:border-slate-950 hover:bg-slate-50"
           aria-label="Decrease quantity"
         >
           -
         </button>
-        <span className="min-w-8 text-center text-xl font-bold tabular-nums">
+        <span className="inline-flex h-14 min-w-32 items-center justify-center rounded-md bg-slate-950 px-8 text-center text-xl font-bold text-white tabular-nums shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
           {quantity}
         </span>
         <button
           type="button"
           onClick={() => addItem({ sku, name, price })}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-2xl font-semibold leading-none transition hover:bg-[#27C8E6] hover:text-slate-950"
+          className="inline-flex h-14 w-14 items-center justify-center rounded-md border border-slate-200 bg-white text-2xl font-semibold leading-none text-slate-950 shadow-sm transition hover:border-[#27C8E6] hover:bg-[#27C8E6]"
           aria-label="Increase quantity"
         >
           +
@@ -49,7 +49,7 @@ export function AddToCartButton({
       onClick={() => {
         addItem({ sku, name, price });
       }}
-      className="group inline-flex items-center justify-center gap-3 rounded-md bg-slate-950 px-8 py-4 text-base font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#27C8E6] hover:text-slate-950 hover:shadow-[0_24px_60px_rgba(39,200,230,0.28)] active:translate-y-0"
+      className="group inline-flex h-14 items-center justify-center gap-3 rounded-md bg-slate-950 px-8 text-base font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#27C8E6] hover:text-slate-950 hover:shadow-[0_24px_60px_rgba(39,200,230,0.28)] active:translate-y-0"
     >
       <span>Add to cart</span>
       <svg

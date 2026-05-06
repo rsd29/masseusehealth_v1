@@ -202,15 +202,20 @@ export function EverglowBuyBox({
                 type="button"
                 aria-pressed={isSelected}
                 onClick={() => onFinishChange(f.id)}
-                className={`rounded-xl border p-3 text-left transition ${
+                className={`relative rounded-xl bg-white p-3 text-left text-slate-800 transition ${
                   isSelected
-                    ? "border-slate-950 bg-slate-950 text-white shadow-[0_18px_44px_rgba(15,23,42,0.18)]"
-                    : "border-slate-200 bg-white text-slate-800 hover:border-slate-400"
+                    ? "border-2 border-slate-950 shadow-[0_18px_44px_rgba(15,23,42,0.12)]"
+                    : "border border-slate-200 hover:border-slate-400"
                 }`}
               >
+                {isSelected ? (
+                  <span className="absolute right-2 top-2 z-10 bg-slate-950 px-2 py-1 text-[0.62rem] font-bold uppercase tracking-[0.12em] text-white">
+                    Selected
+                  </span>
+                ) : null}
                 <span
                   className={`flex h-12 overflow-hidden rounded-lg border ${
-                    isSelected ? "border-white/20" : "border-black/5"
+                    isSelected ? "border-black/10" : "border-black/5"
                   }`}
                   aria-hidden="true"
                 >
@@ -219,9 +224,7 @@ export function EverglowBuyBox({
                 </span>
                 <span className="mt-3 block text-sm font-semibold">{f.label}</span>
                 <span
-                  className={`mt-1 block text-xs leading-5 ${
-                    isSelected ? "text-white/62" : "text-slate-500"
-                  }`}
+                  className="mt-1 block text-xs leading-5 text-slate-500"
                 >
                   {theme.description}
                 </span>
@@ -266,25 +269,25 @@ export function EverglowBuyBox({
         {includeRedLight ? " / Red Light Therapy Panel" : ""}
       </p>
 
-      <p className="mt-4 text-sm font-medium text-slate-600">
-        Configured total{" "}
-        <span className="text-lg font-semibold text-slate-950">{totalPrice}</span>
-      </p>
-
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <AddToCartButton
-          sku={`${everglowProductDetail.sku}-${size.id}-${finishId}${
-            includeRedLight ? "-RLT" : ""
-          }`}
-          name={cartName}
-          price={totalPrice}
-        />
-        <span
-          className="inline-flex cursor-not-allowed select-none items-center justify-center rounded-md border border-slate-200 px-6 py-2.5 text-sm font-medium text-slate-400"
-          aria-disabled="true"
-        >
-          Request a callback
-        </span>
+      <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <AddToCartButton
+            sku={`${everglowProductDetail.sku}-${size.id}-${finishId}${
+              includeRedLight ? "-RLT" : ""
+            }`}
+            name={cartName}
+            price={totalPrice}
+          />
+          <span
+            className="inline-flex h-14 cursor-not-allowed select-none items-center justify-center rounded-md border border-slate-200 px-8 text-base font-semibold text-slate-400"
+            aria-disabled="true"
+          >
+            Request a callback
+          </span>
+        </div>
+        <p className="text-4xl font-semibold leading-none tracking-[-0.065em] text-slate-950 sm:text-5xl">
+          {totalPrice}
+        </p>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3" aria-label="Accepted payment methods">
