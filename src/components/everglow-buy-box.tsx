@@ -91,9 +91,6 @@ export function EverglowBuyBox({
       <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
         {everglowProductDetail.title}
       </h1>
-      <p className="mt-3 text-sm font-medium text-slate-600">
-        {everglowProductDetail.socialProof}
-      </p>
 
       <div className="mt-8 flex flex-wrap items-end gap-3">
         <p className="text-lg text-slate-400 line-through">

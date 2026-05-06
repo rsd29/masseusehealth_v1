@@ -78,14 +78,24 @@ function parseStoredItems(value: string | null): CartItem[] {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    return parseStoredItems(readStoredCart());
-  });
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [hasHydratedStoredCart, setHasHydratedStoredCart] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    queueMicrotask(() => {
+      setItems(parseStoredItems(readStoredCart()));
+      setHasHydratedStoredCart(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedStoredCart) {
+      return;
+    }
+
     writeStoredCart(items);
-  }, [items]);
+  }, [hasHydratedStoredCart, items]);
 
   const addItem = useCallback((item: AddCartItemInput) => {
     setItems((currentItems) => {

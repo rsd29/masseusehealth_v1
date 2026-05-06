@@ -49,6 +49,12 @@ const configurationImages: Record<EverglowSizeId, Record<EverglowFinishId, strin
   },
 };
 
+const sizeCardImages: Record<EverglowSizeId, string> = {
+  zen: "/images/productpage_everglow/imgi_33_infrared-slider-2_lifestyle.webp",
+  lux: "/images/everglow_infrared/lux-redcedarblack.webp",
+  grande: "/images/MHCSauna-40.jpg",
+};
+
 type GalleryColumnProps = {
   sizeId: EverglowSizeId;
   finishId: EverglowFinishId;
@@ -295,6 +301,16 @@ export function EverglowProductView() {
                   key={size.id}
                   className="rounded-[1rem] border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(15,23,42,0.1)]"
                 >
+                  <div className="relative mb-6 aspect-[16/10] overflow-hidden rounded-[0.9rem] bg-slate-100">
+                    <Image
+                      src={sizeCardImages[size.id]}
+                      alt={`Everglow ${size.label} infrared sauna`}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, 100vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
+                  </div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                     Everglow {size.label}
                   </p>
@@ -428,51 +444,44 @@ export function EverglowProductView() {
             id="dimensions-heading"
             className="text-4xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-5xl"
           >
-            Dimensions
+            Dimensions & weight
           </h2>
-          <div className="mt-10 grid gap-8 lg:grid-cols-3">
-            {everglowProductDetail.sizes.map((s) => (
-              <div
-                key={s.id}
-                className="border border-slate-200 bg-slate-50 p-6"
-              >
-                <h3 className="text-lg font-semibold text-slate-950">{s.label}</h3>
-                <ul className="mt-4 space-y-2 text-sm text-slate-700">
-                  <li>
-                    <span className="font-medium text-slate-900">Width:</span> {s.dimensions.wCm}{" "}
-                    cm
-                  </li>
-                  <li>
-                    <span className="font-medium text-slate-900">Height:</span>{" "}
-                    {s.dimensions.hCm} cm
-                  </li>
-                  <li>
-                    <span className="font-medium text-slate-900">Depth:</span> {s.dimensions.dCm}{" "}
-                    cm
-                  </li>
-                </ul>
-              </div>
-            ))}
-          </div>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
+            Dimensions are listed by model. Weights are approximate and shown for
+            Red Cedar builds.
+          </p>
+          <div className="mt-8 overflow-x-auto border border-slate-200">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th className="px-4 py-3">Size</th>
+                  <th className="px-4 py-3">Width</th>
+                  <th className="px-4 py-3">Height</th>
+                  <th className="px-4 py-3">Depth</th>
+                  <th className="px-4 py-3">Approx. weight</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 text-slate-800">
+                {everglowProductDetail.sizes.map((size) => {
+                  const redCedarWeight =
+                    everglowProductDetail.weightElectricalByVariant.find(
+                      (row) => row.size === size.label && row.finish === "Red Cedar",
+                    );
 
-          <h2
-            id="weight-heading"
-            className="mt-16 text-4xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-5xl"
-          >
-            Weight
-          </h2>
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {everglowProductDetail.weightElectricalByVariant
-              .filter((row) => row.finish === "Red Cedar")
-              .map((row) => (
-                <div key={row.size} className="border border-slate-200 p-6">
-                  <p className="text-lg font-semibold text-slate-950">{row.size}</p>
-                  <p className="mt-4 text-5xl font-semibold tracking-[-0.06em] text-slate-950">
-                    {row.weightKg}kg
-                  </p>
-                  <p className="mt-3 text-sm text-slate-500">Approximate Red Cedar weight</p>
-                </div>
-              ))}
+                  return (
+                    <tr key={size.id} className="bg-white">
+                      <td className="px-4 py-3 font-medium">{size.label}</td>
+                      <td className="px-4 py-3">{size.dimensions.wCm} cm</td>
+                      <td className="px-4 py-3">{size.dimensions.hCm} cm</td>
+                      <td className="px-4 py-3">{size.dimensions.dCm} cm</td>
+                      <td className="px-4 py-3">
+                        {redCedarWeight ? `${redCedarWeight.weightKg} kg` : "TBC"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </section>
 
@@ -632,7 +641,7 @@ export function EverglowProductView() {
 
       <section className="border-t border-slate-200 bg-white py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-950">
+          <h2 className="text-center text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
             Elite recovery leaves no questions unanswered
           </h2>
           <p className="mt-3 text-center text-sm text-slate-600">
