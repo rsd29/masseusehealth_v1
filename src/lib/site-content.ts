@@ -2,6 +2,7 @@ export type NavColumn = {
   title: string;
   href: string;
   description: string;
+  imageSrc?: string;
   /** When true, renders as non-interactive UI (no navigation). */
   disabled?: boolean;
 };
@@ -57,7 +58,7 @@ export const siteConfig = {
 
 export const navGroups: NavGroup[] = [
   {
-    label: "Saunass",
+    label: "Saunas",
     href: "#featured-products",
     disabled: true,
     featuredHref: everglowInfraredSaunaPath,
@@ -68,17 +69,20 @@ export const navGroups: NavGroup[] = [
         title: "Everglow Infrared Sauna",
         href: everglowInfraredSaunaPath,
         description: "Full-spectrum infrared heat, premium timber construction, and intelligent controls.",
+        imageSrc: "/images/productpage_everglow/MHCSauna-47.jpg",
       },
       {
         title: "ThermaPod",
         href: "#featured-products",
         description: "Portable heat therapy for flexible routines and everyday use.",
+        imageSrc: "/images/productimages/thermapod.webp",
         disabled: true,
       },
       {
         title: "Everglow Traditional",
         href: "#featured-products",
         description: "Traditional sauna experience for dedicated home wellness zones.",
+        imageSrc: "/images/productimages/everglow_traditional.jpeg",
         disabled: true,
       },
     ],
@@ -309,7 +313,7 @@ export const everglowProductDetail = {
   savingsBanner: "SAVE $5,000.00",
   socialProof: "30,000+ Happy Customers",
   shortDescription:
-    "Premium certified Canadian red cedar construction with full-spectrum infrared heat, chromotherapy, active ventilation, Bluetooth audio and tablet control—designed in Australia for serious recovery spaces.",
+    "Premium certified Canadian red cedar, full-spectrum infrared heat, chromotherapy, active ventilation, Bluetooth audio and tablet control, designed in Australia for serious recovery spaces.",
   promoBar:
     "Shop now & save up to 66% on our premium ice baths & saunas",
   heroBullets: [
@@ -330,26 +334,44 @@ export const everglowProductDetail = {
     {
       id: "zen" as const,
       label: "Zen",
+      compareAtPrice: "$11,995",
+      price: "$6,995",
+      compareAtAud: 11995,
+      saleAud: 6995,
+      savings: "$5,000",
       dimensions: { wCm: 120, hCm: 200, dCm: 140 },
       dimensionsLabel: "W 120 cm × H 200 cm × D 140 cm",
       capacity:
         "Perfect for individuals and compact spaces.",
+      positioning: "The minimalist one-person recovery room.",
       warranty: "2 years",
     },
     {
       id: "lux" as const,
       label: "Lux",
+      compareAtPrice: "$16,995",
+      price: "$9,877",
+      compareAtAud: 16995,
+      saleAud: 9877,
+      savings: "$7,118",
       dimensions: { wCm: 180, hCm: 220, dCm: 150 },
       dimensionsLabel: "W 180 cm × H 220 cm × D 150 cm",
       capacity: "For larger home gyms or personal recovery spaces.",
+      positioning: "More room to stretch, share, and settle in.",
       warranty: "2 years",
     },
     {
       id: "grande" as const,
       label: "Grande",
+      compareAtPrice: "$21,995",
+      price: "$12,877",
+      compareAtAud: 21995,
+      saleAud: 12877,
+      savings: "$9,118",
       dimensions: { wCm: 210, hCm: 221, dCm: 180 },
       dimensionsLabel: "W 210 cm × H 221 cm × D 180 cm",
       capacity: "For elite recovery spaces or larger home gyms.",
+      positioning: "The flagship format for premium home wellness spaces.",
       warranty: "2 years",
     },
   ],
@@ -362,25 +384,29 @@ export const everglowProductDetail = {
   redLightAddOn: {
     title: "Red Light Therapy Panel",
     price: "$1,995",
-    description: "Optional add-on for expanded recovery setups.",
+    priceAud: 1995,
+    description:
+      "Optional recovery upgrade available across Zen, Lux and Grande configurations.",
   },
   trustBadges: [
-    { title: "Fast delivery", description: "Coordinated Australia-wide shipping." },
-    { title: "2-year warranty", description: "Comprehensive coverage for everyday use." },
-    { title: "Lifetime concierge", description: "Ongoing support from our team." },
+    { title: "Fast Delivery", description: "Australia-wide delivery coordinated by our team." },
+    { title: "2-Year Warranty", description: "Every Everglow model includes 2 years of coverage." },
+    { title: "Lifetime Concierge Service", description: "Ongoing support for setup, care and use." },
   ],
   featuresDetailed: [
-    "Certified Canadian red cedar construction, sustainably sourced for durability",
-    "Full-spectrum infrared panel technology for deep tissue heat penetration",
-    "Therapeutic 65°C operating range for comfortable, effective recovery",
-    "Chromotherapy lighting system included for enhanced mental wellbeing",
-    "Double-tier bench seating for flexible positioning and comfort preference",
-    "Active ventilation maintains dry, breathable heat throughout your session",
-    "Built-in Bluetooth speaker system for personalised audio during sessions",
-    "Digital tablet interface for easy temperature, time, and lighting control",
-    "Purpose-built for indoor installation in gyms, home recovery spaces, and wellness areas",
-    "Designed in Melbourne, Australia, with features selected for reliability, durability, and quality standards",
+    "Certified Canadian red cedar construction, sustainably sourced for long-term durability",
+    "Full-spectrum infrared panel technology designed for deep tissue heat penetration",
+    "Therapeutic 65°C operating range for comfortable, repeatable recovery sessions",
+    "Integrated chromotherapy lighting to create a calmer, more immersive wellness ritual",
+    "Double-tier bench seating for flexible positioning, stretching and shared use",
+    "Active ventilation keeps the cabin dry, breathable and consistent through longer sessions",
+    "Built-in Bluetooth speakers for guided breathwork, music or recovery audio",
+    "Digital tablet control for temperature, session timing, lighting and everyday operation",
+    "Purpose-built for indoor installation in gyms, homes and dedicated wellness spaces",
+    "Designed in Melbourne, Australia, with components selected for reliability and quality",
   ],
+  designProtectionNote:
+    "Designs protected under Australian Design Nos. 202611053, 202611054 and 202611055.",
   weightElectricalByVariant: [
     {
       size: "Zen",
@@ -506,15 +532,6 @@ export const everglowProductDetail = {
       },
     ],
   },
-  athletes: {
-    title: "Trusted By Elite Australian Athletes",
-    subtitle: "As seen on State of Origin",
-    people: [
-      { name: "Jack Crisp", role: "AFL legend" },
-      { name: "Robert Shield", role: "Ultra endurance athlete" },
-      { name: "Tom Stewart", role: "5× AFL All-Australian" },
-    ],
-  },
   founder: {
     quote:
       "When Covid hit in 2020, I experienced the massive, performance enhancing impact of contrast therapy first hand. I have never felt so clear, energised and grounded in my life.\n\nI knew I HAD to bring this to more Aussies, and now I’m proud to bring you Masseuse Health Co.’s premium line of ice baths and saunas. So you can unlock your peak mental and physical performance every day.",
@@ -525,17 +542,17 @@ export const everglowProductDetail = {
     {
       q: "What’s included in my purchase?",
       answer:
-        "Your Everglow Infrared Sauna is delivered ready for simple setup and consistent use: the Everglow Infrared Sauna engineered for steady, full-body infrared heat; an optional red light therapy panel add-on; user manual; hassle-free delivery; and a comprehensive 2-year warranty for confidence in everyday use.",
+        "Your purchase includes the Everglow Infrared Sauna engineered for steady full-body infrared heat, a user manual, coordinated delivery and a comprehensive 2-year warranty. The Red Light Therapy Panel is available as an optional $1,995 add-on.",
     },
     {
       q: "Why should I buy a Masseuse Health Co. sauna over other brands?",
       answer:
-        "For over 17 years, Masseuse Health Co. has been dedicated to helping Australians unlock peak performance and live at their best. As a trusted, family-owned company, we combine expert support with uncompromising quality, backed by a comprehensive two-year warranty. Our team helps you support your health and wellbeing, with flexible payment options to make elite performance and recovery accessible.",
+        "Masseuse Health Co. has spent over 17 years helping Australians build better recovery routines. Everglow combines premium timber, infrared heat, digital controls and local support, backed by a 2-year warranty and flexible payment options.",
     },
     {
       q: "How long will it take for my sauna to arrive?",
       answer:
-        "If your Everglow Infrared Sauna is in stock, we’ll process and ship it the next business day. Most customers receive their delivery within just a few days, so you can start your recovery routine as soon as possible.",
+        "If your Everglow Infrared Sauna is in stock, we process and ship it the next business day. Most customers receive delivery within a few days, depending on location and booking availability.",
     },
     {
       q: "Can I get my Everglow Infrared Sauna delivered anywhere in Australia?",
@@ -545,15 +562,9 @@ export const everglowProductDetail = {
     {
       q: "Are there any safety concerns when using the Everglow Infrared Sauna?",
       answer:
-        "Infrared saunas are generally well tolerated, but they should still be used responsibly. Review the safety information in your user manual. If you’re new to infrared heat, begin with shorter, lower-temperature sessions and increase gradually. If you have medical conditions or specific health concerns, consult a qualified professional before use.",
+        "Infrared saunas are generally well tolerated, but they should be used responsibly. Review the user manual, start with shorter lower-temperature sessions if you are new to infrared heat, and consult a qualified professional if you have medical conditions or specific health concerns.",
     },
   ],
-  bottomTagline: {
-    title: "Everyday recovery, reimagined.",
-    subtitle: "Science-backed wellness tools for modern living.",
-  },
-  productTabs: ["Product", "Features", "Reviews"],
-  selectedVariantLabel: "Zen / Red Cedar Black",
 };
 
 export const proofLogos = [

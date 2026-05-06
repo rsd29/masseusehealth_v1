@@ -6,8 +6,6 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { typography } from "@/lib/design-system";
-
 const bentoProducts = [
   {
     name: "Everglow Infrared Sauna",
@@ -18,7 +16,7 @@ const bentoProducts = [
     salePrice: "$6,995",
     discount: "42% off",
     imageSrc: "/images/MHCSauna-40.jpg",
-    className: "lg:col-span-5 lg:row-span-4",
+    className: "lg:col-span-5 lg:row-span-5 lg:col-start-1 lg:row-start-1",
   },
   {
     name: "ThermaPod",
@@ -28,8 +26,8 @@ const bentoProducts = [
     originalPrice: "$595",
     salePrice: "$287",
     discount: "52% off",
-    imageSrc: "/images/productimages/thermal_pod.webp",
-    className: "lg:col-span-4 lg:row-span-3",
+    imageSrc: "/images/productimages/thermapod.webp",
+    className: "lg:col-span-4 lg:row-span-4 lg:col-start-6 lg:row-start-1",
   },
   {
     name: "Niseko",
@@ -40,7 +38,7 @@ const bentoProducts = [
     salePrice: "$7,177",
     discount: "45% off",
     imageSrc: "/images/productimages/niseko.png",
-    className: "lg:col-span-3 lg:row-span-3",
+    className: "lg:col-span-3 lg:row-span-4 lg:col-start-10 lg:row-start-1",
   },
   {
     name: "Plunge",
@@ -51,7 +49,7 @@ const bentoProducts = [
     salePrice: "$347",
     discount: "50% off",
     imageSrc: "/images/productimages/plunge.webp",
-    className: "lg:col-span-3 lg:row-span-3",
+    className: "aspect-square sm:min-h-0 lg:aspect-auto lg:col-span-3 lg:row-span-4 lg:col-start-6 lg:row-start-5",
   },
   {
     name: "Aspen",
@@ -62,7 +60,7 @@ const bentoProducts = [
     salePrice: "$6,777",
     discount: "66% off",
     imageSrc: "/images/productimages/aspen.jpg",
-    className: "lg:col-span-4 lg:row-span-3",
+    className: "lg:col-span-4 lg:row-span-4 lg:col-start-9 lg:row-start-5",
   },
   {
     name: "Everglow Traditional Sauna",
@@ -72,8 +70,8 @@ const bentoProducts = [
     originalPrice: "$11,995",
     salePrice: "$7,995",
     discount: "33% off",
-    imageSrc: "/images/hero-sauna.png",
-    className: "lg:col-span-5 lg:row-span-2",
+    imageSrc: "/images/productimages/everglow_traditional.jpeg",
+    className: "lg:col-span-5 lg:row-span-3 lg:col-start-1 lg:row-start-6",
   },
 ] as const;
 
@@ -147,7 +145,7 @@ export function ProductBentoSection() {
       <h2 id="product-bento-heading" className="sr-only">
         Product collections
       </h2>
-      <div className="grid gap-4 px-4 pb-16 sm:px-6 lg:h-[calc(100svh-76px)] lg:min-h-[760px] lg:grid-cols-12 lg:grid-rows-6 lg:px-8">
+      <div className="grid gap-4 px-4 pb-16 sm:px-6 lg:h-[calc(100svh-76px)] lg:min-h-[820px] lg:grid-cols-12 lg:grid-rows-8 lg:px-8">
         {bentoProducts.map((product) => (
           <Link
             key={product.name}
@@ -163,12 +161,14 @@ export function ProductBentoSection() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/5 transition duration-500 group-hover:from-black/82 group-hover:via-black/35" />
             <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6 lg:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/60">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-white/60 sm:text-[0.68rem]">
                 {product.category}
               </p>
-              <h3 className={`mt-3 ${typography.heroHeading}`}>{product.name}</h3>
+              <h3 className="mt-2 text-xl font-normal leading-none tracking-[-0.035em] sm:text-2xl lg:text-3xl">
+                {product.name}
+              </h3>
               <div
-                className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-2xl font-medium tracking-[-0.05em] tabular-nums sm:text-3xl lg:text-4xl"
+                className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-lg font-medium tracking-[-0.045em] tabular-nums sm:text-xl lg:text-2xl"
               >
                 <span className="relative inline-flex text-white/76">
                   {product.originalPrice}
@@ -180,20 +180,20 @@ export function ProductBentoSection() {
                 </span>
                 <span
                   data-bento-sale-price
-                  className="inline-flex items-center gap-3 text-[#00e05a]"
+                  className="inline-flex items-center gap-2.5 text-[#00e05a]"
                 >
                   <span>{product.salePrice}</span>
-                  <span className="rounded-full border border-[#00e05a]/55 bg-[#00e05a]/14 px-3 py-1 text-sm font-semibold tracking-[-0.03em] text-[#31ff7a] sm:text-base">
-                    {product.discount}
+                  <span className="inline-flex rounded-none bg-[#168a42] px-2 py-1 text-[0.62rem] font-semibold uppercase leading-none tracking-[-0.02em] text-white sm:text-xs">
+                    {product.discount.replace(" off", "")}
                   </span>
                 </span>
               </div>
               <div className="grid grid-rows-[0fr] transition-all duration-500 group-hover:grid-rows-[1fr] group-focus-visible:grid-rows-[1fr]">
                 <div className="overflow-hidden">
-                  <p className="mt-4 max-w-md text-sm leading-6 text-white/78">
+                  <p className="mt-3 max-w-md text-xs leading-5 text-white/78 sm:text-sm sm:leading-6">
                     {product.summary}
                   </p>
-                  <span className="mt-5 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950">
+                  <span className="mt-4 inline-flex rounded-full bg-white px-3.5 py-2 text-xs font-semibold text-slate-950 sm:text-sm">
                     View product
                   </span>
                 </div>

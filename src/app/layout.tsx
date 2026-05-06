@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 
 import { CartProvider } from "@/components/cart-provider";
+import { CustomCursor } from "@/components/custom-cursor";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 import { siteConfig } from "@/lib/site-content";
 
@@ -59,6 +60,7 @@ export default function RootLayout({
         <SmoothScrollProvider>
           <CartProvider>{children}</CartProvider>
         </SmoothScrollProvider>
+        <CustomCursor />
       </body>
     </html>
   );

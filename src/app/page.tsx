@@ -69,7 +69,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
-      <SiteHeader />
+      <SiteHeader overlay />
       <HomePage />
       <SiteFooter />
     </>

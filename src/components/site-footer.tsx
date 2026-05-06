@@ -80,7 +80,6 @@ function InstagramIcon() {
 
 export function SiteFooter() {
   const footerRef = useRef<HTMLElement>(null);
-  const footerPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -90,54 +89,32 @@ export function SiteFooter() {
     gsap.registerPlugin(ScrollTrigger);
 
     const footer = footerRef.current;
-    const footerPanel = footerPanelRef.current;
 
-    if (!footer || !footerPanel) {
+    if (!footer) {
       return;
     }
 
     const context = gsap.context(() => {
-      const titleElements = gsap.utils.toArray<HTMLElement>("[data-footer-title]");
+      const footerElements = gsap.utils.toArray<HTMLElement>(
+        "[data-footer-title], [data-footer-reveal]",
+      );
 
-      gsap.set(titleElements, {
+      gsap.set(footerElements, {
         opacity: 0,
-        y: 26,
+        y: 18,
         willChange: "opacity, transform",
       });
-      gsap.set(footerPanel, {
-        borderRadius: 48,
-        clipPath: "inset(4vw 4vw 0vw 4vw round 48px)",
-        willChange: "clip-path, border-radius",
-      });
 
-      gsap.to(footerPanel, {
-        borderRadius: 0,
-        clipPath: "inset(0vw 0vw 0vw 0vw round 0px)",
-        ease: "none",
-        scrollTrigger: {
-          trigger: footer,
-          start: "top bottom",
-          end: "bottom bottom",
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      const titleTimeline = gsap.timeline({ paused: true });
-
-      titleTimeline.to(titleElements, {
+      gsap.to(footerElements, {
         opacity: 1,
         y: 0,
-        duration: 0.95,
-        ease: "power3.out",
-        stagger: 0.1,
-      });
-
-      ScrollTrigger.create({
-        trigger: footer,
-        start: "top 78%",
-        onEnter: () => titleTimeline.play(),
-        onLeaveBack: () => titleTimeline.reverse(),
+        duration: 0.7,
+        ease: "power2.out",
+        stagger: 0.035,
+        scrollTrigger: {
+          trigger: footer,
+          start: "top 72%",
+        },
       });
     }, footer);
 
@@ -147,59 +124,55 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer ref={footerRef} className="overflow-hidden bg-white text-white">
+    <footer
+      ref={footerRef}
+      className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-white text-slate-100"
+    >
       <div
-        ref={footerPanelRef}
-        className="overflow-hidden bg-[#1b1511]"
+        className="w-screen overflow-hidden rounded-none bg-[#050607]"
       >
-        <div className="px-4 pb-6 pt-10 sm:px-6 sm:pt-12 lg:px-8 lg:pt-16">
-          <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#251f1a]">
-            <div className="grid border-b border-white/10 lg:grid-cols-[0.95fr_1.35fr]">
-              <div className="border-b border-white/10 p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-10">
+        <div className="px-4 pb-4 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pt-10">
+          <div className="overflow-hidden rounded-[1.5rem] border border-[#27C8E6]/18 bg-[#101214]">
+            <div className="grid border-b border-[#27C8E6]/18 lg:grid-cols-[0.95fr_1.35fr]">
+              <div className="border-b border-[#27C8E6]/18 p-5 sm:p-6 lg:border-b-0 lg:border-r lg:p-7">
                 <Image
+                  data-footer-reveal
                   src="/assets/masseuse-health-logo-mark.png"
                   alt="Masseuse Health Co."
                   width={112}
                   height={112}
-                  className="h-20 w-20 object-contain brightness-0 invert sm:h-24 sm:w-24"
+                  className="h-16 w-16 object-contain brightness-0 invert sm:h-20 sm:w-20"
                 />
-                <p data-footer-title className="mt-10 text-sm font-semibold uppercase tracking-[0.28em] text-white/56">
+                <p data-footer-title className="mt-6 text-xs font-semibold uppercase tracking-[0.24em] text-[#27C8E6]/76">
                   Everyday recovery, reimagined.
                 </p>
-                <h2 data-footer-title className="mt-4 max-w-2xl text-4xl font-semibold leading-[0.92] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
+                <h2 data-footer-title className="mt-3 max-w-2xl text-3xl font-semibold leading-[0.94] tracking-[-0.045em] sm:text-5xl lg:text-6xl">
                   Science-backed wellness tools for modern living.
                 </h2>
 
-              <div className="mt-10 max-w-xl rounded-[1.25rem] border border-white/10 bg-[#1b1511]/70 p-4">
-                <p className="text-base font-semibold uppercase tracking-[0.18em] text-white/78">
+              <div data-footer-reveal className="mt-6 max-w-xl rounded-md border border-[#27C8E6]/20 bg-[#050607]/70 p-3">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-100/82">
                   Sign up for offers & wellness tips
                 </p>
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-3 flex flex-col gap-3 sm:flex-row">
                   <input
                     type="email"
                     placeholder="name@email.com"
                     readOnly
-                    className="min-h-12 flex-1 rounded-full border border-white/15 bg-black/20 px-4 text-base font-medium text-white outline-none placeholder:text-white/38"
+                    className="min-h-11 flex-1 rounded-md border border-[#27C8E6]/24 bg-black/45 px-4 text-sm font-medium text-slate-100 outline-none placeholder:text-slate-100/38"
                   />
                   <button
                     type="button"
                     disabled
-                    className="min-h-12 cursor-not-allowed rounded-full bg-white px-5 text-base font-semibold uppercase tracking-[0.14em] text-black opacity-90"
+                    className="min-h-11 cursor-not-allowed rounded-md bg-[#27C8E6] px-5 text-sm font-semibold uppercase tracking-[0.14em] text-[#050607] opacity-90"
                   >
                     Subscribe
                   </button>
                 </div>
               </div>
 
-              <a
-                href="tel:1300888669"
-                className="mt-6 inline-flex items-center rounded-full bg-white px-5 py-3 text-lg font-semibold text-black transition hover:-translate-y-0.5 hover:bg-white/90"
-              >
-                Call 1300 888 669
-              </a>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-[#1b1511]/70 px-4 py-2 text-base font-semibold text-white/82">
+              <div data-footer-reveal className="mt-5 flex flex-wrap gap-3">
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#27C8E6]/24 bg-[#050607]/70 px-3 py-2 text-sm font-semibold text-slate-100/82">
                   <FacebookIcon />
                   Facebook
                 </span>
@@ -207,7 +180,7 @@ export function SiteFooter() {
                   href="https://www.instagram.com/masseusehealthco/?hl=en"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-[#1b1511]/70 px-4 py-2 text-base font-semibold text-white/82 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-black/20 hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#27C8E6]/24 bg-[#050607]/70 px-3 py-2 text-sm font-semibold text-slate-100/82 transition hover:-translate-y-0.5 hover:border-[#27C8E6]/60 hover:bg-black/45 hover:text-white"
                 >
                   <InstagramIcon />
                   Instagram
@@ -215,20 +188,20 @@ export function SiteFooter() {
               </div>
             </div>
 
-              <div className="grid sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid sm:grid-cols-2 md:grid-cols-4">
                 {footerColumns.map((column) => (
                   <div
                     key={column.title}
-                    className="border-b border-white/10 p-6 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 sm:[&:nth-child(odd)]:border-r xl:border-b-0 xl:border-r xl:last:border-r-0"
+                    className="border-b border-[#27C8E6]/18 p-4 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 sm:[&:nth-child(odd)]:border-r md:border-b-0 md:border-r md:last:border-r-0"
                   >
-                    <h3 data-footer-title className="text-xl font-semibold tracking-[-0.04em]">
+                    <h3 data-footer-title className="text-lg font-semibold tracking-[-0.04em]">
                       {column.title}
                     </h3>
-                    <div className="mt-6 space-y-3">
+                    <div data-footer-reveal className="mt-3 space-y-1.5">
                       {column.links.map((link) => (
                         <span
                           key={link}
-                          className="block cursor-not-allowed select-none text-base font-medium text-white/56 transition hover:text-white/78"
+                          className="block cursor-not-allowed select-none text-sm font-medium text-slate-100/56 transition hover:text-slate-100/78"
                           aria-disabled="true"
                         >
                           {link}
@@ -240,23 +213,31 @@ export function SiteFooter() {
               </div>
           </div>
 
-          <div className="grid gap-4 p-6 text-sm font-semibold uppercase tracking-[0.12em] text-white/52 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div data-footer-reveal className="grid gap-4 p-4 text-xs font-semibold uppercase tracking-[0.12em] text-slate-100/52 sm:p-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <p>
-              &copy; 2026 Masseuse Health Co. | ABN 63146395404 | Site by RSD
+              &copy; 2026 Masseuse Health Co. | ABN 63146395404 | Crafted with Intention // RSD
             </p>
-            <label className="inline-flex w-fit items-center gap-3 rounded-full border border-white/12 bg-[#1b1511]/70 px-3 py-2 text-white/72">
-              <span>Language</span>
-              <select
-                defaultValue="en-au"
-                className="bg-black text-sm font-semibold uppercase outline-none"
-                aria-label="Select language"
+            <div className="flex flex-wrap items-center gap-4">
+              <label className="inline-flex w-fit items-center gap-2 text-slate-100/72">
+                <span>Language</span>
+                <select
+                  defaultValue="en-au"
+                  className="bg-transparent text-sm font-semibold uppercase outline-none"
+                  aria-label="Select language"
+                >
+                  <option value="en-au">🇦🇺 English</option>
+                  <option value="zh">🇨🇳 Chinese</option>
+                  <option value="ja">🇯🇵 Japanese</option>
+                  <option value="ko">🇰🇷 Korean</option>
+                </select>
+              </label>
+              <a
+                href="tel:1300888669"
+                className="inline-flex items-center rounded-full bg-[#27C8E6] px-4 py-2 text-sm font-semibold normal-case tracking-normal text-[#050607] transition hover:-translate-y-0.5 hover:bg-[#65ddf2]"
               >
-                <option value="en-au">English</option>
-                <option value="zh">Chinese</option>
-                <option value="ja">Japanese</option>
-                <option value="ko">Korean</option>
-              </select>
-            </label>
+                Call 1300 888 669
+              </a>
+            </div>
           </div>
         </div>
       </div>

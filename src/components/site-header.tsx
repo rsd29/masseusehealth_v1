@@ -30,7 +30,7 @@ function LogoMark({ compact = false }: { compact?: boolean }) {
         width={245}
         height={81}
         priority
-        className={`absolute left-0 top-1/2 h-10 w-auto -translate-y-1/2 transform-gpu transition-opacity duration-200 ease-out will-change-opacity sm:h-11 ${
+        className={`absolute left-0 top-1/2 h-10 w-auto -translate-y-1/2 transform-gpu brightness-0 invert transition-opacity duration-200 ease-out will-change-opacity sm:h-11 ${
           compact ? "opacity-0" : "opacity-100"
         }`}
       />
@@ -40,7 +40,7 @@ function LogoMark({ compact = false }: { compact?: boolean }) {
         width={94}
         height={94}
         priority
-        className={`absolute left-0 top-1/2 -translate-y-1/2 object-contain brightness-0 transform-gpu transition-opacity duration-200 ease-out will-change-opacity ${
+        className={`absolute left-0 top-1/2 -translate-y-1/2 object-contain brightness-0 invert transform-gpu transition-opacity duration-200 ease-out will-change-opacity ${
           compact ? "h-11 w-11 opacity-100 sm:h-12 sm:w-12" : "h-9 w-9 opacity-0 sm:h-10 sm:w-10"
         }`}
       />
@@ -49,14 +49,42 @@ function LogoMark({ compact = false }: { compact?: boolean }) {
 }
 
 function ColumnLink({ column }: { column: NavColumn }) {
+  const content = (
+    <>
+      {column.imageSrc ? (
+        <Image
+          src={column.imageSrc}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 19vw, 50vw"
+          className="object-cover transition duration-700 group-hover/card:scale-105"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-slate-100" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/18 to-black/5 transition duration-500 group-hover/card:from-black/88 group-hover/card:via-black/38" />
+      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+        <p className="text-lg font-semibold leading-tight tracking-[-0.035em]">
+          {column.title}
+        </p>
+        <div className="grid grid-rows-[0fr] transition-all duration-500 group-hover/card:grid-rows-[1fr] group-focus-visible/card:grid-rows-[1fr]">
+          <div className="overflow-hidden">
+            <p className="mt-3 text-sm leading-6 text-white/78">
+              {column.description}
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   if (column.disabled) {
     return (
       <span
-        className={`rounded-2xl border border-slate-200/80 bg-slate-50 p-5 ${disabledLinkClass}`}
+        className={`group/card relative aspect-[4/5] overflow-hidden bg-slate-950 ${disabledLinkClass}`}
         aria-disabled="true"
       >
-        <p className="text-base font-bold text-slate-600">{column.title}</p>
-        <p className="mt-2 text-base leading-7 text-slate-500">{column.description}</p>
+        {content}
       </span>
     );
   }
@@ -64,10 +92,9 @@ function ColumnLink({ column }: { column: NavColumn }) {
   return (
     <Link
       href={column.href}
-      className="rounded-2xl border border-slate-200/80 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white"
+      className="group/card relative aspect-[4/5] overflow-hidden bg-slate-950 outline-none transition focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2"
     >
-      <p className="text-base font-bold text-slate-900">{column.title}</p>
-      <p className="mt-2 text-base leading-7 text-slate-600">{column.description}</p>
+      {content}
     </Link>
   );
 }
@@ -79,17 +106,17 @@ function GroupLabel({
   group: NavGroup;
   compact?: boolean;
 }) {
-  const className = `inline-flex items-center gap-2 text-base font-semibold transition focus:text-slate-950 ${
+  const className = `inline-flex items-center gap-2 text-base font-semibold transition focus:text-white ${
     compact ? "py-2.5" : "py-4"
   }`;
   const showDropdownIndicator = group.columns && group.label !== "Saunass";
 
   if (group.disabled) {
     return (
-      <span className={`${className} cursor-default text-slate-700`}>
+      <span className={`${className} cursor-default text-white/70`}>
         {group.label}
         {showDropdownIndicator ? (
-          <span className="text-sm text-slate-500">+</span>
+          <span className="text-sm text-white/60">+</span>
         ) : null}
       </span>
     );
@@ -98,62 +125,45 @@ function GroupLabel({
   return (
     <Link
       href={group.href}
-      className={`${className} text-slate-900 hover:text-slate-950`}
+      className={`${className} text-white hover:text-white/80 focus:text-white`}
     >
       {group.label}
-      {showDropdownIndicator ? <span className="text-sm text-slate-500">+</span> : null}
-    </Link>
-  );
-}
-
-function FeaturedCta({ group }: { group: NavGroup }) {
-  const href = group.featuredHref ?? group.href;
-  const isDisabled = group.disabled && !group.featuredHref;
-
-  if (isDisabled) {
-    return (
-      <span
-        className={`mt-6 inline-flex rounded-full bg-white/50 px-4 py-2 text-sm font-medium text-slate-500 ${disabledLinkClass}`}
-        aria-disabled="true"
-      >
-        {group.featuredLabel ?? "Explore"}
-      </span>
-    );
-  }
-
-  return (
-    <Link
-      href={href}
-      className="mt-6 inline-flex rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-950"
-    >
-      {group.featuredLabel ?? "Explore"}
+      {showDropdownIndicator ? <span className="text-sm text-white/60">+</span> : null}
     </Link>
   );
 }
 
 function MegaMenu({ group }: { group: NavGroup }) {
+  const isSaunaMenu = group.label === "Saunas";
+  const columnCount = group.columns?.length ?? 1;
+
+  if (!isSaunaMenu) {
+    return (
+      <div className="absolute left-1/2 top-full z-40 w-56 -translate-x-1/2 pt-2 opacity-0 invisible translate-y-1 transition-all duration-200 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+        <div className="absolute left-0 top-[-0.75rem] h-4 w-full bg-transparent" aria-hidden="true" />
+        <div className="pointer-events-auto border border-black/5 bg-white px-5 py-4 text-center shadow-[0_20px_50px_rgba(15,23,42,0.12)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+            {group.label}
+          </p>
+          <p className="mt-2 text-base font-semibold text-slate-950">Coming soon</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="absolute left-0 top-full z-40 w-[44rem] pt-2 opacity-0 invisible translate-y-1 transition-all duration-200 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+    <div className="absolute left-1/2 top-full z-40 w-[58rem] -translate-x-1/2 pt-2 opacity-0 invisible translate-y-1 transition-all duration-200 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
       <div
         className="absolute left-6 top-[-0.55rem] h-4 w-32 bg-transparent [clip-path:polygon(50%_0,0_100%,100%_100%)]"
         aria-hidden="true"
       />
       <div className="absolute left-0 top-[-0.75rem] h-4 w-72 bg-transparent" aria-hidden="true" />
-      <div className="pointer-events-auto rounded-3xl border border-black/5 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
-        <div className="grid gap-4 md:grid-cols-[1.3fr_1fr]">
-          <div className="grid gap-3 sm:grid-cols-2">
-            {group.columns?.map((column) => <ColumnLink key={column.title} column={column} />)}
-          </div>
-
-          <div className="rounded-2xl bg-slate-950 p-6 text-white">
-            <p className="text-xs uppercase tracking-[0.28em] text-white/50">Featured</p>
-            <h3 className="mt-3 text-xl font-semibold">{group.label}</h3>
-            <p className="mt-2 text-sm leading-6 text-white/72">
-              {group.description ??
-                "Explore science-backed recovery tools designed for modern home wellness."}
-            </p>
-            <FeaturedCta group={group} />
-          </div>
+      <div className="pointer-events-auto border border-black/5 bg-white p-0 shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
+        <div
+          className="grid"
+          style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}
+        >
+          {group.columns?.map((column) => <ColumnLink key={column.title} column={column} />)}
         </div>
       </div>
     </div>
@@ -172,7 +182,11 @@ function MegaMenuBridge() {
   );
 }
 
-export function SiteHeader() {
+type SiteHeaderProps = {
+  overlay?: boolean;
+};
+
+export function SiteHeader({ overlay = false }: SiteHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const isScrolledRef = useRef(false);
 
@@ -205,10 +219,10 @@ export function SiteHeader() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+        className={`${overlay ? "fixed inset-x-0" : "sticky"} top-0 z-50 border-b transition-all duration-300 ${
           isScrolled
-            ? "border-black/8 bg-white/50 shadow-[0_10px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl"
-            : "border-transparent bg-white"
+            ? "border-white/10 bg-black/70 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl"
+            : "border-white/10 bg-black/55 backdrop-blur-xl"
         }`}
       >
         <div
@@ -250,9 +264,9 @@ export function SiteHeader() {
             <HeaderCartButton mobile />
 
             <details className="group w-full max-w-48">
-              <summary className="flex cursor-pointer list-none items-center justify-between rounded-full border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-800">
+              <summary className="flex cursor-pointer list-none items-center justify-between rounded-full border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15">
                 Menu
-                <span className="text-slate-400 transition group-open:rotate-45">+</span>
+                <span className="text-white/70 transition group-open:rotate-45">+</span>
               </summary>
               <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-lg">
                 <nav aria-label="Mobile navigation">

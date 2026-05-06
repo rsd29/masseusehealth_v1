@@ -48,7 +48,7 @@ export default function EverglowInfraredProductPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
-      <SiteHeader />
+      <SiteHeader overlay />
       <main id="main-content">
         <EverglowProductView />
       </main>

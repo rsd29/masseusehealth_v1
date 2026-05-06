@@ -102,9 +102,16 @@ export function HeroSection({ headingClassName, productHref }: HeroSectionProps)
 
       ScrollTrigger.create({
         trigger: section,
-        start: "top top",
-        onEnter: () => lineReveal.play(),
-        onLeaveBack: () => lineReveal.reverse(),
+        start: "top -2px",
+        onEnter: () => lineReveal.timeScale(1).play(),
+        onLeaveBack: () => lineReveal.timeScale(4).reverse(),
+      });
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top -25%",
+        onEnter: () => lineReveal.timeScale(1).play(),
+        onLeaveBack: () => lineReveal.timeScale(4).reverse(),
       });
     }, section);
 
@@ -115,7 +122,7 @@ export function HeroSection({ headingClassName, productHref }: HeroSectionProps)
 
   return (
     <section ref={sectionRef} className="overflow-hidden bg-white">
-      <div className="relative h-[calc(100dvh-76px)] min-h-[calc(100svh-76px)] w-full">
+      <div className="relative h-dvh min-h-svh w-full">
         <div ref={mediaRef} className="absolute inset-0 overflow-hidden">
           <Image
             src="/images/MHCSauna-40.jpg"
@@ -139,7 +146,7 @@ export function HeroSection({ headingClassName, productHref }: HeroSectionProps)
               height={180}
               priority
               aria-hidden="true"
-              className="hero-mark-enter h-20 w-20 object-contain brightness-0 invert sm:h-28 sm:w-28 lg:h-40 lg:w-40"
+              className="hero-mark-enter h-20 w-20 object-contain sm:h-28 sm:w-28 lg:h-40 lg:w-40"
             />
           </div>
           <div
@@ -170,16 +177,25 @@ export function HeroSection({ headingClassName, productHref }: HeroSectionProps)
             <p
               className={`${headingClassName} max-w-[98vw] text-[clamp(0.82rem,3.25vw,3.35rem)] font-normal leading-tight tracking-[-0.04em] text-white [text-shadow:0_10px_38px_rgba(0,0,0,0.5),0_3px_14px_rgba(0,0,0,0.45)]`}
             >
-              <span data-hero-center-line className="block whitespace-nowrap">
+              <span
+                data-hero-center-line
+                className="block whitespace-nowrap motion-safe:translate-y-[18px] motion-safe:opacity-0"
+              >
                 Backed by{" "}
                 <span className="text-[#f0b35f]">research</span>, trusted by{" "}
                 <span className="italic text-white/95">pros</span>
               </span>
-              <span data-hero-center-line className="block whitespace-nowrap">
+              <span
+                data-hero-center-line
+                className="block whitespace-nowrap motion-safe:translate-y-[18px] motion-safe:opacity-0"
+              >
                 unlock <span className="italic text-white/95">deeper recovery</span>,
                 sharper focus,
               </span>
-              <span data-hero-center-line className="block whitespace-nowrap">
+              <span
+                data-hero-center-line
+                className="block whitespace-nowrap motion-safe:translate-y-[18px] motion-safe:opacity-0"
+              >
                 and{" "}
                 <span className="italic text-[#f2d7b6] drop-shadow-[0_0_18px_rgba(242,215,182,0.5)]">
                   lasting wellbeing

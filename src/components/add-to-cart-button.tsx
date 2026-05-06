@@ -38,7 +38,7 @@ export function AddToCartButton({
         }
         timeoutRef.current = window.setTimeout(() => setJustAdded(false), 1200);
       }}
-      className="inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+      className="inline-flex rounded-md bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
     >
       {justAdded ? "Added" : "Add to cart"}
     </button>
