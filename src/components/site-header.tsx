@@ -158,7 +158,7 @@ function MegaMenu({ group }: { group: NavGroup }) {
         aria-hidden="true"
       />
       <div className="absolute left-0 top-[-0.75rem] h-4 w-72 bg-transparent" aria-hidden="true" />
-      <div className="pointer-events-auto border border-black/5 bg-white p-0 shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
+      <div className="pointer-events-auto bg-white p-0 shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
         <div
           className="grid"
           style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}

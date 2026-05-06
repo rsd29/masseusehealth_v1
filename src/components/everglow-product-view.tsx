@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import { EverglowBuyBox } from "@/components/everglow-buy-box";
 import { useCountUp } from "@/hooks/use-count-up";
-import { everglowProductDetail } from "@/lib/site-content";
+import {
+  everglowProductDetail,
+  type EverglowFinishId,
+  type EverglowSizeId,
+} from "@/lib/site-content";
 
 const productImages = [
   "/images/MHCSauna-40.jpg",
@@ -18,57 +22,85 @@ const productImages = [
   "/images/productpage_everglow/MHCSauna-42.jpg",
 ] as const;
 
-const galleryImages = productImages.slice(0, 5);
 const productTabs = ["Overview", "Models", "Features", "Dimensions", "Electrical"];
 
-function PromoBar() {
-  return (
-    <div className="border-b border-white/10 bg-slate-950 py-2.5 text-center">
-      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/90 sm:text-xs">
-        {everglowProductDetail.promoBar}
-      </p>
-    </div>
-  );
-}
+const configurationImages: Record<EverglowSizeId, Record<EverglowFinishId, string>> = {
+  zen: {
+    "red-cedar-black":
+      "/images/everglow_infrared/Zen_-_Red_Cedar_Black_-_Size-lifestyle.webp",
+    "red-cedar-natural":
+      "/images/everglow_infrared/Zen_Red_Cedar_Natural_-_Size1-lifestyle.webp",
+    "hemlock-black":
+      "/images/everglow_infrared/Zen_Hemlock_Black_-_Size1-lifestyle.webp",
+    "hemlock-natural":
+      "/images/everglow_infrared/Zen_Hemlock_Natural_-_Size1-lifestyle.webp",
+  },
+  lux: {
+    "red-cedar-black": "/images/everglow_infrared/lux-redcedarblack.webp",
+    "red-cedar-natural": "/images/everglow_infrared/lux-redcedarnatural.webp",
+    "hemlock-black": "/images/everglow_infrared/lux-hemlockblack.webp",
+    "hemlock-natural": "/images/everglow_infrared/lux-hemlocknatural.webp",
+  },
+  grande: {
+    "red-cedar-black": "/images/everglow_infrared/grande-redcedarblack.webp",
+    "red-cedar-natural": "/images/everglow_infrared/grande-redcedarnatural.webp",
+    "hemlock-black": "/images/everglow_infrared/grande_hemlockblack.webp",
+    "hemlock-natural": "/images/everglow_infrared/grande-hemlocknatural.webp",
+  },
+};
 
-function GalleryColumn() {
-  const [selectedImage, setSelectedImage] = useState(galleryImages[0]);
+type GalleryColumnProps = {
+  sizeId: EverglowSizeId;
+  finishId: EverglowFinishId;
+  onFinishChange: (finishId: EverglowFinishId) => void;
+};
+
+function GalleryColumn({ sizeId, finishId, onFinishChange }: GalleryColumnProps) {
+  const selectedSize = everglowProductDetail.sizes.find((size) => size.id === sizeId)!;
+  const selectedFinish = everglowProductDetail.finishes.find((finish) => finish.id === finishId)!;
+  const selectedImage = configurationImages[sizeId][finishId];
 
   return (
-    <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-      <div className="group relative aspect-[4/3] overflow-hidden rounded-[1rem] bg-slate-950 shadow-[0_30px_90px_rgba(15,23,42,0.16)] lg:aspect-[16/10]">
+    <div className="space-y-3 lg:sticky lg:top-28 lg:self-start">
+      <div className="group relative aspect-[4/3] overflow-hidden rounded-[1rem] bg-slate-950 lg:aspect-auto lg:h-[calc(100svh-20rem)] lg:min-h-[21rem]">
         <Image
           src={selectedImage}
-          alt="Everglow Infrared Sauna in a styled recovery room"
+          alt={`Everglow ${selectedSize.label} Infrared Sauna in ${selectedFinish.label}`}
           fill
           priority
           sizes="(min-width: 1024px) 52vw, 100vw"
           className="object-cover transition duration-1000 group-hover:scale-[1.03]"
         />
       </div>
-      <div className="grid grid-cols-5 gap-3">
-        {galleryImages.map((src, index) => (
+      <div className="grid grid-cols-4 gap-2">
+        {everglowProductDetail.finishes.map((finish) => (
           <button
-            key={src}
+            key={finish.id}
             type="button"
-            onClick={() => setSelectedImage(src)}
-            aria-label={`Show Everglow product image ${index + 1}`}
-            className={`group relative aspect-[4/3] overflow-hidden rounded-[0.75rem] bg-slate-100 transition ${
-              selectedImage === src
-                ? "ring-2 ring-slate-950 ring-offset-2"
+            onClick={() => onFinishChange(finish.id)}
+            aria-label={`Preview ${selectedSize.label} in ${finish.label}`}
+            className={`group relative aspect-[4/3] overflow-hidden rounded-[0.65rem] bg-slate-100 transition ${
+              finishId === finish.id
+                ? "shadow-[inset_0_0_0_2px_rgba(15,23,42,1)]"
                 : "opacity-75 hover:opacity-100"
             }`}
           >
             <Image
-              src={src}
-              alt={`Everglow Infrared Sauna detail ${index + 1}`}
+              src={configurationImages[sizeId][finish.id]}
+              alt={`Everglow ${selectedSize.label} ${finish.label} finish preview`}
               fill
               sizes="(min-width: 1024px) 24vw, 50vw"
               className="object-cover transition duration-700 group-hover:scale-105"
             />
+            <span className="absolute inset-x-0 bottom-0 bg-black/62 px-1.5 py-0.5 text-left text-[0.58rem] font-semibold text-white">
+              {finish.label.replace("Red Cedar ", "Cedar ")}
+            </span>
           </button>
         ))}
       </div>
+      <p className="text-xs leading-5 text-slate-500">
+        Use the theme picker to compare finishes for the selected {selectedSize.label} model.
+      </p>
     </div>
   );
 }
@@ -76,21 +108,62 @@ function GalleryColumn() {
 function TrustRow() {
   return (
     <div className="mt-12 grid gap-4 border-y border-slate-200 py-10 sm:grid-cols-3">
-      {everglowProductDetail.trustBadges.map((b) => (
-        <div key={b.title} className="text-center sm:text-left">
-          <p className="text-sm font-semibold text-slate-950">{b.title}</p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">{b.description}</p>
+      {everglowProductDetail.trustBadges.map((b, index) => (
+        <div
+          key={b.title}
+          data-trust-badge
+          style={{ transitionDelay: `${index * 90}ms` }}
+          className="mx-auto max-w-xs translate-y-4 text-center opacity-0 transition duration-700 ease-out"
+        >
+          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-sm">
+            <TrustIcon title={b.title} />
+          </div>
+          <p className="mt-4 text-base font-semibold tracking-[-0.02em] text-slate-950">
+            {b.title}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{b.description}</p>
         </div>
       ))}
     </div>
   );
 }
 
+function TrustIcon({ title }: { title: string }) {
+  if (title.includes("Delivery")) {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 7h11v10H3z" />
+        <path d="M14 10h3.5L21 13.5V17h-7z" />
+        <path d="M6.5 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+        <path d="M17.5 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+      </svg>
+    );
+  }
+
+  if (title.includes("Warranty")) {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6z" />
+        <path d="m8.8 12 2.1 2.1 4.4-4.6" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+      <path d="M7.5 7.5 16.5 16.5" />
+      <path d="m16.5 7.5-9 9" />
+    </svg>
+  );
+}
+
 function ProductTabs() {
   return (
-    <div className="sticky top-[73px] z-30 border-y border-slate-200/80 bg-white/86 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-3 text-sm font-semibold text-slate-600 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap gap-6">
+    <div className="sticky top-16 z-30 border-y border-slate-200/80 bg-white/86 backdrop-blur-xl">
+      <div className="flex w-full flex-wrap items-center gap-5 px-4 py-2 text-xs font-semibold text-slate-600 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap gap-5">
           {productTabs.map((tab, index) => (
             <a
               key={tab}
@@ -101,9 +174,6 @@ function ProductTabs() {
             </a>
           ))}
         </div>
-        <a href="#buy" className="rounded-md bg-slate-950 px-4 py-2 text-xs text-white">
-          Buy
-        </a>
       </div>
     </div>
   );
@@ -127,7 +197,7 @@ function AnimatedOperatingRange() {
 function SelectedVariantCard() {
   return (
     <section className="border-t border-slate-200 bg-white py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 overflow-hidden rounded-[1.25rem] border border-slate-200 bg-slate-50 p-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div className="relative min-h-80 overflow-hidden rounded-[1rem] bg-slate-200 lg:min-h-[28rem]">
             <Image
@@ -165,36 +235,107 @@ function SelectedVariantCard() {
 }
 
 export function EverglowProductView() {
+  const [sizeId, setSizeId] = useState<EverglowSizeId>("zen");
+  const [finishId, setFinishId] = useState<EverglowFinishId>("red-cedar-black");
+
+  useEffect(() => {
+    const revealElements = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-hex-feature], [data-trust-badge]"),
+    );
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      revealElements.forEach((element) => {
+        element.classList.remove("opacity-0", "translate-y-4", "translate-y-5");
+        element.classList.add("opacity-100", "translate-y-0");
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove("opacity-0", "translate-y-4", "translate-y-5");
+            entry.target.classList.add("opacity-100", "translate-y-0");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.24 },
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       <section
         id="overview"
         className="border-b border-black/5 bg-[radial-gradient(circle_at_50%_0%,_#f4f7fb_0%,_#fff_42%,_#fff_100%)]"
       >
-        <div className="pt-24 sm:pt-28">
-          <PromoBar />
-        </div>
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="mx-auto mt-8 max-w-5xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-              Everglow Infrared
-            </p>
-            <h1 className="mt-5 text-4xl font-semibold leading-[0.94] tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl">
-              Recovery, with the quiet confidence of great design.
-            </h1>
-            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600 sm:text-xl">
-              Premium infrared heat, Canadian timber, chromotherapy, Bluetooth audio,
-              and precise digital control in a sauna built for modern homes.
-            </p>
+        <div className="w-full px-4 pb-8 pt-32 sm:px-6 sm:pt-36 lg:px-8">
+          <div id="models" className="mt-14">
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
+                Choose your Everglow
+              </p>
+              <h2 className="mt-4 text-4xl font-semibold leading-none tracking-[-0.055em] text-slate-950 sm:text-6xl">
+                Three formats. One seriously refined recovery ritual.
+              </h2>
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600 sm:text-xl">
+                Premium infrared heat, Canadian timber, chromotherapy, Bluetooth audio,
+                and precise digital control in a sauna built for modern homes.
+              </p>
+            </div>
+            <div className="mt-12 grid gap-4 lg:grid-cols-3">
+              {everglowProductDetail.sizes.map((size) => (
+                <article
+                  key={size.id}
+                  className="rounded-[1rem] border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(15,23,42,0.1)]"
+                >
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Everglow {size.label}
+                  </p>
+                  <p className="mt-5 text-5xl font-semibold tracking-[-0.06em] text-slate-950">
+                    {size.price}
+                  </p>
+                  <p className="mt-2 text-base text-slate-400 line-through">
+                    {size.compareAtPrice}
+                  </p>
+                  <p className="mt-6 text-base leading-7 text-slate-600">{size.positioning}</p>
+                  <dl className="mt-8 space-y-4 border-t border-slate-200 pt-6 text-sm">
+                    <div>
+                      <dt className="font-semibold text-slate-950">Dimensions</dt>
+                      <dd className="mt-1 text-slate-600">{size.dimensionsLabel}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold text-slate-950">Best for</dt>
+                      <dd className="mt-1 text-slate-600">{size.capacity}</dd>
+                    </div>
+                  </dl>
+                </article>
+              ))}
+            </div>
           </div>
 
           <div
             id="buy"
-            className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)] lg:items-start lg:gap-16"
+            className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(380px,1.05fr)] lg:items-start lg:gap-16"
           >
-            <GalleryColumn />
+            <GalleryColumn
+              sizeId={sizeId}
+              finishId={finishId}
+              onFinishChange={setFinishId}
+            />
             <div className="rounded-[1rem] border border-slate-200/80 bg-white/82 p-6 shadow-[0_30px_100px_rgba(15,23,42,0.08)] backdrop-blur sm:p-8">
-              <EverglowBuyBox />
+              <EverglowBuyBox
+                sizeId={sizeId}
+                finishId={finishId}
+                onSizeChange={setSizeId}
+                onFinishChange={setFinishId}
+              />
             </div>
           </div>
 
@@ -205,7 +346,7 @@ export function EverglowProductView() {
       <ProductTabs />
 
       <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+        <div className="w-full">
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="relative min-h-[30rem] overflow-hidden rounded-[1.25rem] bg-slate-950 lg:min-h-[42rem]">
               <Image
@@ -250,67 +391,27 @@ export function EverglowProductView() {
         </div>
       </section>
 
-      <section id="models" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-              Choose your Everglow
-            </p>
-            <h2 className="mt-4 text-4xl font-semibold leading-none tracking-[-0.055em] text-slate-950 sm:text-6xl">
-              Three formats. One seriously refined recovery ritual.
-            </h2>
-          </div>
-          <div className="mt-12 grid gap-4 lg:grid-cols-3">
-            {everglowProductDetail.sizes.map((size) => (
-              <article
-                key={size.id}
-                className="rounded-[1rem] border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(15,23,42,0.1)]"
-              >
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Everglow {size.label}
-                </p>
-                <p className="mt-5 text-5xl font-semibold tracking-[-0.06em] text-slate-950">
-                  {size.price}
-                </p>
-                <p className="mt-2 text-base text-slate-400 line-through">
-                  {size.compareAtPrice}
-                </p>
-                <p className="mt-6 text-base leading-7 text-slate-600">{size.positioning}</p>
-                <dl className="mt-8 space-y-4 border-t border-slate-200 pt-6 text-sm">
-                  <div>
-                    <dt className="font-semibold text-slate-950">Dimensions</dt>
-                    <dd className="mt-1 text-slate-600">{size.dimensionsLabel}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-slate-950">Best for</dt>
-                    <dd className="mt-1 text-slate-600">{size.capacity}</dd>
-                  </div>
-                </dl>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="w-full px-4 py-20 sm:px-6 lg:px-8">
         <section id="features" aria-labelledby="features-heading" className="scroll-mt-32">
-          <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div className="grid gap-12 lg:grid-cols-[0.68fr_1.32fr] lg:items-start">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
                 Features
               </p>
               <h2
                 id="features-heading"
-                className="mt-4 text-4xl font-semibold leading-none tracking-[-0.055em] text-slate-950 sm:text-6xl"
+                className="mt-4 whitespace-nowrap text-3xl font-semibold leading-none tracking-[-0.05em] text-slate-950 sm:text-4xl lg:text-5xl"
               >
                 Every detail has a job.
               </h2>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {everglowProductDetail.featuresDetailed.map((line) => (
+            <div className="feature-honeycomb">
+              {everglowProductDetail.featuresDetailed.map((line, index) => (
                 <div
                   key={line}
-                  className="rounded-[0.75rem] border border-slate-200 bg-slate-50 p-5 text-sm leading-7 text-slate-700"
+                  data-hex-feature
+                  style={{ transitionDelay: `${(index % 4) * 70}ms` }}
+                  className="feature-hex flex translate-y-5 items-center justify-center bg-slate-950 p-7 text-center text-sm font-medium leading-6 text-white opacity-0 shadow-[0_18px_50px_rgba(15,23,42,0.12)] transition duration-700 ease-out"
                 >
                   {line}
                 </div>
@@ -333,7 +434,7 @@ export function EverglowProductView() {
             {everglowProductDetail.sizes.map((s) => (
               <div
                 key={s.id}
-                className="rounded-[0.75rem] border border-slate-200 bg-slate-50 p-6"
+                className="border border-slate-200 bg-slate-50 p-6"
               >
                 <h3 className="text-lg font-semibold text-slate-950">{s.label}</h3>
                 <ul className="mt-4 space-y-2 text-sm text-slate-700">
@@ -353,12 +454,10 @@ export function EverglowProductView() {
               </div>
             ))}
           </div>
-        </section>
 
-        <section id="weight" aria-labelledby="weight-heading" className="mt-24 scroll-mt-32">
           <h2
             id="weight-heading"
-            className="text-4xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-5xl"
+            className="mt-16 text-4xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-5xl"
           >
             Weight
           </h2>
@@ -366,7 +465,7 @@ export function EverglowProductView() {
             {everglowProductDetail.weightElectricalByVariant
               .filter((row) => row.finish === "Red Cedar")
               .map((row) => (
-                <div key={row.size} className="rounded-[0.75rem] border border-slate-200 p-6">
+                <div key={row.size} className="border border-slate-200 p-6">
                   <p className="text-lg font-semibold text-slate-950">{row.size}</p>
                   <p className="mt-4 text-5xl font-semibold tracking-[-0.06em] text-slate-950">
                     {row.weightKg}kg
@@ -388,7 +487,7 @@ export function EverglowProductView() {
             Power requirements vary by size and timber selection. Confirm final
             installation requirements for the configuration you choose.
           </p>
-          <div className="mt-8 overflow-x-auto rounded-[0.75rem] border border-slate-200">
+          <div className="mt-8 overflow-x-auto border border-slate-200">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 <tr>
@@ -427,7 +526,7 @@ export function EverglowProductView() {
       <SelectedVariantCard />
 
       <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid w-full gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="relative min-h-[34rem] overflow-hidden rounded-[1.25rem] bg-slate-950">
             <Image
               src={productImages[6]}
@@ -466,7 +565,7 @@ export function EverglowProductView() {
         aria-labelledby="deep-heat-heading"
         className="border-y border-slate-200 bg-slate-950 py-20 text-white"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <h2
             id="deep-heat-heading"
             className="text-3xl font-semibold tracking-tight sm:text-4xl"
@@ -491,7 +590,7 @@ export function EverglowProductView() {
       </section>
 
       <section className="bg-slate-50 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
             Science-Backed Recovery
           </h2>
@@ -509,7 +608,7 @@ export function EverglowProductView() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="w-full px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid gap-12 rounded-[1.25rem] border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:p-14">
           <div className="aspect-[4/5] max-h-80 overflow-hidden rounded-[1rem] bg-slate-200 lg:max-h-none" />
           <div>

@@ -12,6 +12,31 @@ import {
 const paymentMethods =
   "American Express · Apple Pay · Google Pay · Mastercard · PayPal · Shop Pay · Union Pay · Visa · Humm";
 
+const finishThemes: Record<
+  EverglowFinishId,
+  {
+    description: string;
+    swatchClassName: string;
+  }
+> = {
+  "red-cedar-black": {
+    description: "Warm cedar cabin with black exterior accents.",
+    swatchClassName: "bg-[linear-gradient(135deg,#7a3f1f_0_48%,#111827_48%_100%)]",
+  },
+  "red-cedar-natural": {
+    description: "Warm cedar inside and out for a softer wellness-room feel.",
+    swatchClassName: "bg-[linear-gradient(135deg,#7a3f1f_0_48%,#c8874a_48%_100%)]",
+  },
+  "hemlock-black": {
+    description: "Light hemlock interior paired with a clean black shell.",
+    swatchClassName: "bg-[linear-gradient(135deg,#d4b98a_0_48%,#111827_48%_100%)]",
+  },
+  "hemlock-natural": {
+    description: "Light, natural timber for bright minimalist spaces.",
+    swatchClassName: "bg-[linear-gradient(135deg,#d4b98a_0_48%,#f3e3c2_48%_100%)]",
+  },
+};
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-AU", {
     style: "currency",
@@ -20,9 +45,19 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-export function EverglowBuyBox() {
-  const [sizeId, setSizeId] = useState<EverglowSizeId>("zen");
-  const [finishId, setFinishId] = useState<EverglowFinishId>("red-cedar-black");
+type EverglowBuyBoxProps = {
+  sizeId: EverglowSizeId;
+  finishId: EverglowFinishId;
+  onSizeChange: (sizeId: EverglowSizeId) => void;
+  onFinishChange: (finishId: EverglowFinishId) => void;
+};
+
+export function EverglowBuyBox({
+  sizeId,
+  finishId,
+  onSizeChange,
+  onFinishChange,
+}: EverglowBuyBoxProps) {
   const [includeRedLight, setIncludeRedLight] = useState(false);
 
   const size = useMemo(
@@ -51,7 +86,7 @@ export function EverglowBuyBox() {
   return (
     <div className="flex flex-col">
       <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-800">
-        Save {size.savings} on {size.label}
+        Sauna theme picker
       </p>
       <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
         {everglowProductDetail.title}
@@ -84,72 +119,50 @@ export function EverglowBuyBox() {
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
           Sauna type
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {everglowProductDetail.saunaTypes.map((t) =>
-            t.disabled ? (
-              <span
-                key={t.id}
-                className="inline-flex cursor-not-allowed select-none rounded-md border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-400 opacity-70"
-                aria-disabled="true"
+        <p className="mt-1 text-sm text-slate-600">Choose the infrared sauna format first.</p>
+        <div
+          role="tablist"
+          aria-label="Choose Everglow infrared sauna size"
+          className="mt-4 grid grid-cols-3 rounded-full bg-slate-100 p-1"
+        >
+          {everglowProductDetail.sizes.map((s) => {
+            const isSelected = sizeId === s.id;
+
+            return (
+              <button
+                key={s.id}
+                type="button"
+                role="tab"
+                aria-selected={isSelected}
+                onClick={() => onSizeChange(s.id)}
+                className={`rounded-full px-3 py-3 text-center text-sm font-semibold transition ${
+                  isSelected
+                    ? "bg-slate-950 text-white shadow-[0_12px_30px_rgba(15,23,42,0.2)]"
+                    : "text-slate-600 hover:bg-white hover:text-slate-950"
+                }`}
               >
-                {t.label}
-              </span>
-            ) : (
-              <span
-                key={t.id}
-                className="inline-flex rounded-md border border-slate-950 bg-slate-950 px-4 py-2 text-sm font-medium text-white"
-              >
-                {t.label}
-              </span>
-            ),
-          )}
+                {s.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <div className="mt-10">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-          Size
+          Selected format
         </p>
-        <p className="mt-1 text-sm text-slate-600">Which one fits you best?</p>
-        <div className="mt-4 grid gap-3">
-          {everglowProductDetail.sizes.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => setSizeId(s.id)}
-              className={`rounded-[0.75rem] border p-4 text-left transition ${
-                sizeId === s.id
-                  ? "border-slate-950 bg-slate-950 text-white shadow-[0_18px_44px_rgba(15,23,42,0.22)]"
-                  : "border-slate-200 bg-white text-slate-800 hover:border-slate-400 hover:bg-slate-50"
-              }`}
-            >
-              <span className="flex items-start justify-between gap-4">
-                <span>
-                  <span className="block text-base font-semibold">{s.label}</span>
-                  <span
-                    className={`mt-1 block text-xs leading-5 ${
-                      sizeId === s.id ? "text-white/68" : "text-slate-500"
-                    }`}
-                  >
-                    {s.positioning}
-                  </span>
-                </span>
-                <span className="text-right">
-                  <span
-                    className={`block text-sm line-through ${
-                      sizeId === s.id ? "text-white/45" : "text-slate-400"
-                    }`}
-                  >
-                    {s.compareAtPrice}
-                  </span>
-                  <span className="block text-lg font-semibold">{s.price}</span>
-                </span>
-              </span>
-            </button>
-          ))}
-        </div>
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700">
-          <p className="font-medium text-slate-950">{size.dimensionsLabel}</p>
+        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-lg font-semibold text-slate-950">Everglow {size.label}</p>
+              <p className="mt-2 font-medium text-slate-950">{size.dimensionsLabel}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-slate-400 line-through">{size.compareAtPrice}</p>
+              <p className="text-xl font-semibold text-slate-950">{size.price}</p>
+            </div>
+          </div>
           <p className="mt-2 leading-7">{size.capacity}</p>
           <p className="mt-3 text-xs uppercase tracking-wider text-slate-500">
             Warranty · {size.warranty}
@@ -159,23 +172,45 @@ export function EverglowBuyBox() {
 
       <div className="mt-10">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-          Finish · {size.label}
+          Finish theme · {size.label}
         </p>
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-2">
-          {everglowProductDetail.finishes.map((f) => (
-            <button
-              key={f.id}
-              type="button"
-              onClick={() => setFinishId(f.id)}
-              className={`rounded-lg border px-4 py-3 text-left text-sm font-medium transition ${
-                finishId === f.id
-                  ? "border-slate-950 bg-slate-950 text-white"
-                  : "border-slate-200 bg-white text-slate-800 hover:border-slate-400"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+        <p className="mt-1 text-sm text-slate-600">
+          Pick the timber and exterior look that matches your room.
+        </p>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {everglowProductDetail.finishes.map((f) => {
+            const isSelected = finishId === f.id;
+            const theme = finishThemes[f.id];
+
+            return (
+              <button
+                key={f.id}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => onFinishChange(f.id)}
+                className={`rounded-xl border p-3 text-left transition ${
+                  isSelected
+                    ? "border-slate-950 bg-slate-950 text-white shadow-[0_18px_44px_rgba(15,23,42,0.18)]"
+                    : "border-slate-200 bg-white text-slate-800 hover:border-slate-400"
+                }`}
+              >
+                <span
+                  className={`block h-12 rounded-lg border ${
+                    isSelected ? "border-white/20" : "border-black/5"
+                  } ${theme.swatchClassName}`}
+                  aria-hidden="true"
+                />
+                <span className="mt-3 block text-sm font-semibold">{f.label}</span>
+                <span
+                  className={`mt-1 block text-xs leading-5 ${
+                    isSelected ? "text-white/62" : "text-slate-500"
+                  }`}
+                >
+                  {theme.description}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -239,7 +274,6 @@ export function EverglowBuyBox() {
         {paymentMethods}
       </p>
 
-      <p className="mt-4 text-xs text-slate-500">Now available. Order today!</p>
     </div>
   );
 }
