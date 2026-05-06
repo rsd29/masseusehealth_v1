@@ -50,7 +50,7 @@ type PressCarouselProps = {
 export function PressCarousel({ headingClassName }: PressCarouselProps) {
   return (
     <section aria-labelledby="press-carousel-heading" className="overflow-hidden bg-white">
-      <div className="w-full pb-16 pt-16 sm:pt-20 lg:pt-24">
+      <div className="w-full pb-24 pt-16 sm:pb-28 sm:pt-20 lg:pb-32 lg:pt-24">
         <h2
           id="press-carousel-heading"
           className={`${headingClassName} ${typography.heroHeading} px-4 text-center text-slate-950 sm:px-6 lg:px-8`}

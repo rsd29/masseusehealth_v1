@@ -23,13 +23,14 @@ type CartContextValue = {
   itemCount: number;
   isOpen: boolean;
   addItem: (item: AddCartItemInput) => void;
+  decrementItem: (sku: string) => void;
   removeItem: (sku: string) => void;
   closeCart: () => void;
   openCart: () => void;
   toggleCart: () => void;
 };
 
-const CART_STORAGE_KEY = "masseuse-health-mock-cart";
+const CART_STORAGE_KEY = "masseuse-health-cart";
 
 const CartContext = createContext<CartContextValue | null>(null);
 
@@ -123,6 +124,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const decrementItem = useCallback((sku: string) => {
+    setItems((currentItems) =>
+      currentItems.flatMap((currentItem) => {
+        if (currentItem.sku !== sku) {
+          return [currentItem];
+        }
+
+        if (currentItem.quantity <= 1) {
+          return [];
+        }
+
+        return [{ ...currentItem, quantity: currentItem.quantity - 1 }];
+      }),
+    );
+  }, []);
+
   const itemCount = useMemo(
     () => items.reduce((total, item) => total + item.quantity, 0),
     [items],
@@ -134,12 +151,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       itemCount,
       isOpen,
       addItem,
+      decrementItem,
       removeItem,
       closeCart: () => setIsOpen(false),
       openCart: () => setIsOpen(true),
       toggleCart: () => setIsOpen((currentValue) => !currentValue),
     }),
-    [addItem, isOpen, itemCount, items, removeItem],
+    [addItem, decrementItem, isOpen, itemCount, items, removeItem],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

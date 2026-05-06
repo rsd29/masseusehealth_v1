@@ -1,6 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import {
@@ -9,33 +12,55 @@ import {
   type EverglowSizeId,
 } from "@/lib/site-content";
 
-const paymentMethods =
-  "American Express · Apple Pay · Google Pay · Mastercard · PayPal · Shop Pay · Union Pay · Visa · Humm";
+const paymentIcons = [
+  { src: "/images/paymenticons/AMEX.svg", alt: "American Express", width: 59, height: 16 },
+  { src: "/images/paymenticons/ApplePay.svg", alt: "Apple Pay", width: 51, height: 22 },
+  { src: "/images/paymenticons/GooglePay.svg", alt: "Google Pay", width: 50, height: 22 },
+  { src: "/images/paymenticons/Mastercard.svg", alt: "Mastercard", width: 46, height: 28 },
+  { src: "/images/paymenticons/PayPal.svg", alt: "PayPal", width: 82, height: 22 },
+  { src: "/images/paymenticons/visa-logo.svg", alt: "Visa", width: 50, height: 17 },
+] as const;
 
 const finishThemes: Record<
   EverglowFinishId,
   {
     description: string;
-    swatchClassName: string;
+    leftSwatchClassName: string;
+    rightSwatchClassName: string;
   }
 > = {
   "red-cedar-black": {
     description: "Warm cedar cabin with black exterior accents.",
-    swatchClassName: "bg-[linear-gradient(135deg,#7a3f1f_0_48%,#111827_48%_100%)]",
+    leftSwatchClassName: "bg-[#7a3f1f]",
+    rightSwatchClassName: "bg-[#111827]",
   },
   "red-cedar-natural": {
     description: "Warm cedar inside and out for a softer wellness-room feel.",
-    swatchClassName: "bg-[linear-gradient(135deg,#7a3f1f_0_48%,#c8874a_48%_100%)]",
+    leftSwatchClassName: "bg-[#7a3f1f]",
+    rightSwatchClassName: "bg-[#c8874a]",
   },
   "hemlock-black": {
     description: "Light hemlock interior paired with a clean black shell.",
-    swatchClassName: "bg-[linear-gradient(135deg,#d4b98a_0_48%,#111827_48%_100%)]",
+    leftSwatchClassName: "bg-[#d4b98a]",
+    rightSwatchClassName: "bg-[#111827]",
   },
   "hemlock-natural": {
     description: "Light, natural timber for bright minimalist spaces.",
-    swatchClassName: "bg-[linear-gradient(135deg,#d4b98a_0_48%,#f3e3c2_48%_100%)]",
+    leftSwatchClassName: "bg-[#d4b98a]",
+    rightSwatchClassName: "bg-[#f3e3c2]",
   },
 };
+
+const bulletShapeClipPaths = [
+  "circle(50% at 50% 50%)",
+  "polygon(50% 7%, 93% 82%, 7% 82%)",
+  "polygon(12% 12%, 88% 12%, 88% 88%, 12% 88%)",
+  "polygon(50% 5%, 95% 38%, 78% 92%, 22% 92%, 5% 38%)",
+  "polygon(25% 7%, 75% 7%, 100% 50%, 75% 93%, 25% 93%, 0% 50%)",
+  "polygon(50% 4%, 89% 19%, 99% 61%, 72% 95%, 28% 95%, 1% 61%, 11% 19%)",
+  "polygon(30% 4%, 70% 4%, 96% 30%, 96% 70%, 70% 96%, 30% 96%, 4% 70%, 4% 30%)",
+  "polygon(50% 3%, 82% 12%, 98% 40%, 92% 72%, 67% 94%, 33% 94%, 8% 72%, 2% 40%, 18% 12%)",
+];
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-AU", {
@@ -48,17 +73,16 @@ function formatCurrency(value: number) {
 type EverglowBuyBoxProps = {
   sizeId: EverglowSizeId;
   finishId: EverglowFinishId;
-  onSizeChange: (sizeId: EverglowSizeId) => void;
   onFinishChange: (finishId: EverglowFinishId) => void;
 };
 
 export function EverglowBuyBox({
   sizeId,
   finishId,
-  onSizeChange,
   onFinishChange,
 }: EverglowBuyBoxProps) {
   const [includeRedLight, setIncludeRedLight] = useState(false);
+  const featureListRef = useRef<HTMLUListElement>(null);
 
   const size = useMemo(
     () => everglowProductDetail.sizes.find((s) => s.id === sizeId)!,
@@ -83,89 +107,82 @@ export function EverglowBuyBox({
     includeRedLight ? " + Red Light Therapy Panel" : ""
   }`;
 
+  useEffect(() => {
+    const featureList = featureListRef.current;
+
+    if (!featureList) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const context = gsap.context(() => {
+      const featureLines = gsap.utils.toArray<HTMLElement>("[data-everglow-feature-line]");
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(featureLines, { opacity: 1, y: 0 });
+        return;
+      }
+
+      gsap.set(featureLines, {
+        opacity: 0,
+        y: 18,
+        willChange: "opacity, transform",
+      });
+
+      gsap.to(featureLines, {
+        opacity: 1,
+        y: 0,
+        duration: 0.62,
+        ease: "power2.out",
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: featureList,
+          start: "top 78%",
+        },
+      });
+    }, featureList);
+
+    return () => {
+      context.revert();
+    };
+  }, []);
+
   return (
     <div className="flex flex-col">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-800">
-        Sauna theme picker
-      </p>
-      <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+      <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
         {everglowProductDetail.title}
       </h1>
 
-      <div className="mt-8 flex flex-wrap items-end gap-3">
-        <p className="text-lg text-slate-400 line-through">
+      <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="relative inline-flex text-2xl font-bold tracking-[-0.05em] text-slate-400 tabular-nums sm:text-3xl">
           {size.compareAtPrice}
-        </p>
-        <p className="text-3xl font-semibold text-slate-950 sm:text-4xl">
-          {size.price}
-        </p>
+          <span
+            className="absolute left-[-0.08em] top-1/2 h-1 w-[calc(100%+0.16em)] -translate-y-1/2 bg-slate-950"
+            aria-hidden="true"
+          />
+        </span>
+        <span className="inline-flex items-center gap-2.5 text-3xl font-bold tracking-[-0.055em] text-[#00e05a] tabular-nums sm:text-4xl">
+          <span>{size.price}</span>
+          <span className="inline-flex rounded-none bg-[#168a42] px-2 py-1 text-xs font-semibold uppercase leading-none tracking-[-0.02em] text-white">
+            Save {size.savings}
+          </span>
+        </span>
       </div>
 
-      <ul className="mt-8 space-y-3 text-sm leading-7 text-slate-700">
-        {everglowProductDetail.heroBullets.map((line) => (
-          <li key={line} className="flex gap-3">
-            <span className="mt-0.5 shrink-0 text-emerald-600" aria-hidden="true">
-              ✔︎
+      <ul ref={featureListRef} className="mt-8 space-y-4 text-base leading-8 text-slate-700 sm:text-lg sm:leading-9">
+        {everglowProductDetail.heroBullets.map((line, index) => (
+          <li key={line} data-everglow-feature-line className="flex gap-4">
+            <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center" aria-hidden="true">
+              <span
+                className="block h-4 w-4 bg-slate-950"
+                style={{ clipPath: bulletShapeClipPaths[index % bulletShapeClipPaths.length] }}
+              />
             </span>
             <span>{line}</span>
           </li>
         ))}
       </ul>
-
-      <div className="mt-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-          Sauna type
-        </p>
-        <p className="mt-1 text-sm text-slate-600">Choose the infrared sauna format first.</p>
-        <div
-          role="tablist"
-          aria-label="Choose Everglow infrared sauna size"
-          className="mt-4 grid grid-cols-3 rounded-full bg-slate-100 p-1"
-        >
-          {everglowProductDetail.sizes.map((s) => {
-            const isSelected = sizeId === s.id;
-
-            return (
-              <button
-                key={s.id}
-                type="button"
-                role="tab"
-                aria-selected={isSelected}
-                onClick={() => onSizeChange(s.id)}
-                className={`rounded-full px-3 py-3 text-center text-sm font-semibold transition ${
-                  isSelected
-                    ? "bg-slate-950 text-white shadow-[0_12px_30px_rgba(15,23,42,0.2)]"
-                    : "text-slate-600 hover:bg-white hover:text-slate-950"
-                }`}
-              >
-                {s.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="mt-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-          Selected format
-        </p>
-        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="text-lg font-semibold text-slate-950">Everglow {size.label}</p>
-              <p className="mt-2 font-medium text-slate-950">{size.dimensionsLabel}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-slate-400 line-through">{size.compareAtPrice}</p>
-              <p className="text-xl font-semibold text-slate-950">{size.price}</p>
-            </div>
-          </div>
-          <p className="mt-2 leading-7">{size.capacity}</p>
-          <p className="mt-3 text-xs uppercase tracking-wider text-slate-500">
-            Warranty · {size.warranty}
-          </p>
-        </div>
-      </div>
 
       <div className="mt-10">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -192,11 +209,14 @@ export function EverglowBuyBox({
                 }`}
               >
                 <span
-                  className={`block h-12 rounded-lg border ${
+                  className={`flex h-12 overflow-hidden rounded-lg border ${
                     isSelected ? "border-white/20" : "border-black/5"
-                  } ${theme.swatchClassName}`}
+                  }`}
                   aria-hidden="true"
-                />
+                >
+                  <span className={`block h-full flex-1 ${theme.leftSwatchClassName}`} />
+                  <span className={`block h-full flex-1 ${theme.rightSwatchClassName}`} />
+                </span>
                 <span className="mt-3 block text-sm font-semibold">{f.label}</span>
                 <span
                   className={`mt-1 block text-xs leading-5 ${
@@ -267,9 +287,18 @@ export function EverglowBuyBox({
         </span>
       </div>
 
-      <p className="mt-6 text-[0.65rem] font-medium uppercase leading-relaxed tracking-wide text-slate-500">
-        {paymentMethods}
-      </p>
+      <div className="mt-6 flex flex-wrap items-center gap-3" aria-label="Accepted payment methods">
+        {paymentIcons.map((icon) => (
+          <Image
+            key={icon.alt}
+            src={icon.src}
+            alt={icon.alt}
+            width={icon.width}
+            height={icon.height}
+            className="h-4 w-auto opacity-40 grayscale"
+          />
+        ))}
+      </div>
 
     </div>
   );

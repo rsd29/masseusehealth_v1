@@ -580,17 +580,17 @@ export const proofLogos = [
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "The Niseko Ice Bath has exceeded all my expectations. The build quality is amazing, it holds the cold well, and it looks sleek in my space.",
+      "I use the Plunge as part of my weekly recovery routine. The build quality is amazing, it holds the cold well, and it looks sleek in my space.",
     author: "Danique B.",
   },
   {
     quote:
-      "Tried the Niseko Ice Tub and it was epic. Easy to set up, stays cold for ages, and looks great too. It has been a game changer for recovery.",
+      "The Plunge has been epic for recovery. Easy to set up, stays cold for ages, and looks great too — a total game changer after training.",
     author: "Run Escapes A.",
   },
   {
     quote:
-      "First class experience from order to delivery. Informative, consultative, and professional.",
+      "The ThermaPod has been perfect for heat sessions at home. First class experience from order to delivery — informative, consultative, and professional.",
     author: "Dan Williams",
   },
   {

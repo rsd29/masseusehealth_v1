@@ -36,6 +36,12 @@ const legacyStats = [
   },
 ] as const;
 
+const legacyParagraphs = [
+  "Masseuse Health Co. was born from the same team behind Masseuse Massage Chairs, one of Australia’s most trusted wellness brands, known for delivering high-quality recovery tools and exceptional service for over a decade.",
+  "With more than 30,000 Australians using our massage chairs to support their physical and mental wellbeing at home, Masseuse has built a reputation for care, innovation, and lasting results.",
+  "We’re bringing that deep experience into active recovery with ice baths, infrared saunas, and tools built for modern performance. Same commitment to quality. Same customer-first service. A powerful evolution into whole-body wellness.",
+] as const;
+
 type CountUpStatProps = {
   value: number;
   suffix: string;
@@ -55,7 +61,7 @@ function CountUpStat({ value: targetValue, suffix }: CountUpStatProps) {
       ref={elementRef}
       className={`inline-flex transition duration-700 ${
         isComplete
-          ? "text-[#27C8E6] [text-shadow:0_0_24px_rgba(39,200,230,0.38)]"
+          ? "text-[#27C8E6] [text-shadow:0_0_12px_rgba(39,200,230,0.18)]"
           : "text-slate-950"
       }`}
     >
@@ -83,9 +89,9 @@ export function CustomerStoriesSection() {
 
     const context = gsap.context(() => {
       const captions = gsap.utils.toArray<HTMLElement>("[data-customer-story-caption]");
-      const legacyStatRows = gsap.utils.toArray<HTMLElement>("[data-legacy-stat-row]");
+      const legacyRows = gsap.utils.toArray<HTMLElement>("[data-legacy-row]");
 
-      gsap.set([...captions, ...legacyStatRows], {
+      gsap.set([...captions, ...legacyRows], {
         opacity: 0,
         y: 28,
         willChange: "opacity, transform",
@@ -115,10 +121,10 @@ export function CustomerStoriesSection() {
       });
 
       ScrollTrigger.create({
-        trigger: "[data-legacy-stats]",
+        trigger: "[data-legacy-section]",
         start: "top 78%",
         onEnter: () => {
-          gsap.to(legacyStatRows, {
+          gsap.to(legacyRows, {
             opacity: 1,
             y: 0,
             duration: 0.7,
@@ -127,7 +133,7 @@ export function CustomerStoriesSection() {
           });
         },
         onLeaveBack: () => {
-          gsap.to(legacyStatRows, {
+          gsap.to(legacyRows, {
             opacity: 0,
             y: 28,
             duration: 0.3,
@@ -161,14 +167,24 @@ export function CustomerStoriesSection() {
 
         <div className="mt-12 grid gap-5 lg:grid-cols-3">
           {featuredStories.map((story, index) => (
-            <article key={story.author} className="group">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-none bg-slate-100 shadow-sm transition-[border-radius] duration-500 ease-out group-hover:rounded-[1.5rem]">
+            <article key={story.author} className={story.author === "Danique B." ? "" : "group"}>
+              <div
+                className={`relative aspect-[4/5] overflow-hidden rounded-none bg-slate-100 shadow-sm ${
+                  story.author === "Danique B."
+                    ? ""
+                    : "transition-[border-radius] duration-500 ease-out group-hover:rounded-[1.5rem]"
+                }`}
+              >
                 <Image
                   src={testimonialImages[index]}
                   alt=""
                   fill
                   sizes="(min-width: 1024px) 33vw, 100vw"
-                  className="object-cover transition duration-700 group-hover:scale-105"
+                  className={`object-cover transition duration-700 ${
+                    story.author === "Danique B." ? "" : "group-hover:scale-105"
+                  } ${
+                    index === 0 ? "-scale-x-100" : ""
+                  }`}
                   priority={index === 0}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/24 via-transparent to-transparent" />
@@ -213,51 +229,39 @@ export function CustomerStoriesSection() {
           </Link>
         </div>
 
-        <div className="mt-20 grid gap-10 border-y border-slate-200 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-20">
-          <div className="max-w-4xl">
-            <h3 className="max-w-3xl text-3xl font-semibold leading-[0.98] tracking-[-0.05em] text-slate-950 sm:text-4xl lg:text-5xl">
-              Masseuse Health Co. is the next chapter in whole-body{" "}
-              <span className="italic">wellness</span>.
-            </h3>
-            <div className="mt-7 max-w-3xl space-y-5 text-base leading-8 text-slate-600 sm:text-lg sm:leading-9">
-              <p>
-                Masseuse Health Co. was born from the same team behind Masseuse Massage
-                Chairs, one of Australia&apos;s most trusted wellness brands, known for
-                delivering high-quality recovery tools and exceptional service for over
-                a decade.
-              </p>
-              <p>
-                With more than 30,000 Australians using our massage chairs to support
-                their physical and mental wellbeing at home, Masseuse has built a
-                reputation for care, innovation, and lasting results.
-              </p>
-              <p>
-                We&apos;re bringing that deep experience into active recovery with ice
-                baths, infrared saunas, and tools built for modern performance. Same
-                commitment to quality. Same customer-first service. A powerful evolution
-                into whole-body wellness.
-              </p>
-            </div>
-          </div>
+        <div
+          data-legacy-section
+          className="mx-auto mt-20 max-w-5xl border-y border-slate-200 py-14 text-center lg:py-20"
+        >
+          <h3 className="mx-auto max-w-4xl text-3xl font-semibold leading-[0.98] tracking-[-0.05em] text-slate-950 sm:text-4xl lg:text-5xl">
+            Masseuse Health Co. is the next chapter in whole-body <span className="italic">wellness</span>.
+          </h3>
 
-          <div
-            data-legacy-stats
-            className="mx-auto grid w-full max-w-md gap-10 self-center border-l border-slate-200 pl-6 sm:pl-8 lg:justify-items-center lg:border-l-0 lg:pl-0"
-          >
-            {legacyStats.map((stat) => (
-              <div
-                key={stat.label}
-                data-legacy-stat-row
-                className="w-full text-left lg:max-w-xs lg:text-center"
-              >
-                <p className="text-5xl font-semibold leading-none tracking-[-0.06em] text-slate-950 sm:text-7xl">
-                  <CountUpStat value={stat.value} suffix={stat.suffix} />
-                </p>
-                <p className="mt-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
+          <div className="mt-10 space-y-7">
+            {legacyStats.map((stat, index) => {
+              return (
+                <div
+                  key={stat.label}
+                  data-legacy-row
+                  className="grid gap-8 text-left lg:grid-cols-[1.1fr_0.9fr] lg:items-center"
+                >
+                  <p className="max-w-3xl text-base leading-8 text-slate-600 sm:text-lg sm:leading-9">
+                    {legacyParagraphs[index]}
+                  </p>
+
+                  <div className="flex items-center justify-center lg:border-l lg:border-slate-200 lg:pl-8">
+                    <div className="w-fit max-w-full text-center">
+                      <p className="inline-flex justify-center text-5xl font-semibold leading-none tracking-[-0.06em] text-slate-950 sm:text-7xl">
+                        <CountUpStat value={stat.value} suffix={stat.suffix} />
+                      </p>
+                      <p className="mt-3 max-w-xs text-center text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        {stat.label}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

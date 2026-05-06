@@ -82,89 +82,16 @@ a {
     hero-mark-glow 2.8s 950ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.product-preview-image-enter {
+  animation: product-preview-image-enter 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.product-preview-image-exit {
+  animation: product-preview-image-exit 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .press-marquee {
   animation: press-marquee 54s linear infinite;
-}
-
-.feature-honeycomb {
-  --hex-width: min(82vw, 17rem);
-  --hex-height: calc(var(--hex-width) * 0.866);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-}
-
-.feature-hex {
-  width: var(--hex-width);
-  height: var(--hex-height);
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-}
-
-@media (min-width: 1024px) {
-  .feature-honeycomb {
-    --hex-width: clamp(12.5rem, 13.6vw, 16rem);
-    display: grid;
-    grid-template-columns: repeat(7, calc(var(--hex-width) / 2));
-    grid-auto-rows: calc(var(--hex-height) / 2);
-    justify-content: center;
-    gap: 0;
-  }
-
-  .feature-hex {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .feature-hex:nth-child(1) {
-    grid-column-start: 1;
-    grid-row-start: 1;
-  }
-
-  .feature-hex:nth-child(2) {
-    grid-column-start: 3;
-    grid-row-start: 1;
-  }
-
-  .feature-hex:nth-child(3) {
-    grid-column-start: 5;
-    grid-row-start: 1;
-  }
-
-  .feature-hex:nth-child(4) {
-    grid-column-start: 2;
-    grid-row-start: 2;
-  }
-
-  .feature-hex:nth-child(5) {
-    grid-column-start: 4;
-    grid-row-start: 2;
-  }
-
-  .feature-hex:nth-child(6) {
-    grid-column-start: 6;
-    grid-row-start: 2;
-  }
-
-  .feature-hex:nth-child(7) {
-    grid-column-start: 1;
-    grid-row-start: 3;
-  }
-
-  .feature-hex:nth-child(8) {
-    grid-column-start: 3;
-    grid-row-start: 3;
-  }
-
-  .feature-hex:nth-child(9) {
-    grid-column-start: 5;
-    grid-row-start: 3;
-  }
-
-  .feature-hex:nth-child(10) {
-    grid-column-start: 2;
-    grid-row-start: 4;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -203,6 +130,34 @@ a {
   34% {
     filter: brightness(0) saturate(100%) invert(79%) sepia(89%) saturate(1774%) hue-rotate(148deg) brightness(112%) contrast(96%)
       drop-shadow(0 0 32px rgba(76, 222, 246, 0.78));
+  }
+}
+
+@keyframes product-preview-image-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.985);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes product-preview-image-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0) scale(0.99);
+    filter: blur(8px);
   }
 }
 

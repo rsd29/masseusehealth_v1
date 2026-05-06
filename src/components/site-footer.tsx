@@ -98,7 +98,6 @@ export function SiteFooter() {
       const footerElements = gsap.utils.toArray<HTMLElement>(
         "[data-footer-title], [data-footer-reveal]",
       );
-
       gsap.set(footerElements, {
         opacity: 0,
         y: 18,
@@ -126,15 +125,18 @@ export function SiteFooter() {
   return (
     <footer
       ref={footerRef}
-      className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-white text-slate-100"
+      className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#050607] text-slate-100"
     >
       <div
         className="w-screen overflow-hidden rounded-none bg-[#050607]"
       >
-        <div className="px-4 pb-4 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pt-10">
-          <div className="overflow-hidden rounded-[1.5rem] border border-[#27C8E6]/18 bg-[#101214]">
-            <div className="grid border-b border-[#27C8E6]/18 lg:grid-cols-[0.95fr_1.35fr]">
-              <div className="border-b border-[#27C8E6]/18 p-5 sm:p-6 lg:border-b-0 lg:border-r lg:p-7">
+        <div
+          data-footer-panel-wrap
+          className="p-0"
+        >
+          <div className="overflow-hidden border-y border-white/10 bg-[#101214]">
+            <div className="grid border-b border-white/10 lg:grid-cols-[0.95fr_1.35fr]">
+              <div className="border-b border-white/10 p-5 sm:p-6 lg:border-b-0 lg:border-r lg:p-7">
                 <Image
                   data-footer-reveal
                   src="/assets/masseuse-health-logo-mark.png"
@@ -150,7 +152,7 @@ export function SiteFooter() {
                   Science-backed wellness tools for modern living.
                 </h2>
 
-              <div data-footer-reveal className="mt-6 max-w-xl rounded-md border border-[#27C8E6]/20 bg-[#050607]/70 p-3">
+              <div data-footer-reveal className="mt-6 max-w-xl rounded-md border border-white/12 bg-[#050607]/70 p-3">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-100/82">
                   Sign up for offers & wellness tips
                 </p>
@@ -159,7 +161,7 @@ export function SiteFooter() {
                     type="email"
                     placeholder="name@email.com"
                     readOnly
-                    className="min-h-11 flex-1 rounded-md border border-[#27C8E6]/24 bg-black/45 px-4 text-sm font-medium text-slate-100 outline-none placeholder:text-slate-100/38"
+                    className="min-h-11 flex-1 rounded-md border border-white/12 bg-black/45 px-4 text-sm font-medium text-slate-100 outline-none placeholder:text-slate-100/38"
                   />
                   <button
                     type="button"
@@ -172,7 +174,7 @@ export function SiteFooter() {
               </div>
 
               <div data-footer-reveal className="mt-5 flex flex-wrap gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full border border-[#27C8E6]/24 bg-[#050607]/70 px-3 py-2 text-sm font-semibold text-slate-100/82">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-[#050607]/70 px-3 py-2 text-sm font-semibold text-slate-100/82">
                   <FacebookIcon />
                   Facebook
                 </span>
@@ -180,11 +182,17 @@ export function SiteFooter() {
                   href="https://www.instagram.com/masseusehealthco/?hl=en"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-[#27C8E6]/24 bg-[#050607]/70 px-3 py-2 text-sm font-semibold text-slate-100/82 transition hover:-translate-y-0.5 hover:border-[#27C8E6]/60 hover:bg-black/45 hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-[#050607]/70 px-3 py-2 text-sm font-semibold text-slate-100/82 transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-black/45 hover:text-white"
                 >
                   <InstagramIcon />
                   Instagram
                 </Link>
+                <a
+                  href="tel:1300888669"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-[#050607]/70 px-3 py-2 text-sm font-semibold text-slate-100/82 transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-black/45 hover:text-white"
+                >
+                  Call 1300 888 669
+                </a>
               </div>
             </div>
 
@@ -192,7 +200,7 @@ export function SiteFooter() {
                 {footerColumns.map((column) => (
                   <div
                     key={column.title}
-                    className="border-b border-[#27C8E6]/18 p-4 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 sm:[&:nth-child(odd)]:border-r md:border-b-0 md:border-r md:last:border-r-0"
+                    className="border-b border-white/10 p-4 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 sm:[&:nth-child(odd)]:border-r md:border-b-0 md:border-r md:last:border-r-0"
                   >
                     <h3 data-footer-title className="text-lg font-semibold tracking-[-0.04em]">
                       {column.title}
@@ -213,31 +221,32 @@ export function SiteFooter() {
               </div>
           </div>
 
-          <div data-footer-reveal className="grid gap-4 p-4 text-xs font-semibold uppercase tracking-[0.12em] text-slate-100/52 sm:p-5 lg:grid-cols-[1fr_auto] lg:items-center">
-            <p>
+          <div data-footer-reveal className="grid items-center gap-3 border-t border-slate-100/12 p-4 text-xs font-semibold uppercase tracking-[0.12em] text-slate-100/52 sm:p-5 lg:grid-cols-[1fr_auto_auto] lg:gap-5">
+            <p className="leading-none">
               &copy; 2026 Masseuse Health Co. | ABN 63146395404 | Crafted with Intention // RSD
             </p>
-            <div className="flex flex-wrap items-center gap-4">
-              <label className="inline-flex w-fit items-center gap-2 text-slate-100/72">
-                <span>Language</span>
-                <select
-                  defaultValue="en-au"
-                  className="bg-transparent text-sm font-semibold uppercase outline-none"
-                  aria-label="Select language"
-                >
-                  <option value="en-au">🇦🇺 English</option>
-                  <option value="zh">🇨🇳 Chinese</option>
-                  <option value="ja">🇯🇵 Japanese</option>
-                  <option value="ko">🇰🇷 Korean</option>
-                </select>
-              </label>
-              <a
-                href="tel:1300888669"
-                className="inline-flex items-center rounded-full bg-[#27C8E6] px-4 py-2 text-sm font-semibold normal-case tracking-normal text-[#050607] transition hover:-translate-y-0.5 hover:bg-[#65ddf2]"
-              >
-                Call 1300 888 669
-              </a>
+            <div className="flex flex-wrap items-center gap-3 text-slate-400/90 lg:justify-end">
+                <span className="sr-only">Accepted payment methods</span>
+                <Image src="/images/paymenticons/visa-logo.svg" alt="Visa" width={50} height={17} className="h-4 w-auto" />
+                <Image src="/images/paymenticons/Mastercard.svg" alt="Mastercard" width={46} height={28} className="h-5 w-auto" />
+                <Image src="/images/paymenticons/AMEX.svg" alt="American Express" width={59} height={16} className="h-4 w-auto" />
+                <Image src="/images/paymenticons/PayPal.svg" alt="PayPal" width={82} height={22} className="h-4.5 w-auto" />
+                <Image src="/images/paymenticons/ApplePay.svg" alt="Apple Pay" width={51} height={22} className="h-4.5 w-auto" />
+                <Image src="/images/paymenticons/GooglePay.svg" alt="Google Pay" width={50} height={22} className="h-4.5 w-auto" />
             </div>
+            <label className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-100/18 bg-slate-100/6 px-3 py-1.5 text-[0.68rem] font-semibold uppercase leading-none tracking-[0.12em] text-slate-100/78 lg:justify-self-end">
+              <span>Language</span>
+              <select
+                defaultValue="en-au"
+                className="bg-transparent text-[0.68rem] font-semibold uppercase leading-none text-slate-100 outline-none"
+                aria-label="Select language"
+              >
+                <option className="bg-white text-slate-950" value="en-au">English</option>
+                <option className="bg-white text-slate-950" value="zh">Chinese</option>
+                <option className="bg-white text-slate-950" value="ja">Japanese</option>
+                <option className="bg-white text-slate-950" value="ko">Korean</option>
+              </select>
+            </label>
           </div>
         </div>
       </div>

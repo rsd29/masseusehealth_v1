@@ -1,12 +1,91 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { useCart } from "@/components/cart-provider";
+import {
+  everglowProductDetail,
+  type EverglowFinishId,
+  type EverglowSizeId,
+} from "@/lib/site-content";
+
+const cartProductImages: Record<EverglowSizeId, Record<EverglowFinishId, string>> = {
+  zen: {
+    "red-cedar-black":
+      "/images/everglow_infrared/Zen_-_Red_Cedar_Black_-_Size-lifestyle.webp",
+    "red-cedar-natural":
+      "/images/everglow_infrared/Zen_Red_Cedar_Natural_-_Size1-lifestyle.webp",
+    "hemlock-black":
+      "/images/everglow_infrared/Zen_Hemlock_Black_-_Size1-lifestyle.webp",
+    "hemlock-natural":
+      "/images/everglow_infrared/Zen_Hemlock_Natural_-_Size1-lifestyle.webp",
+  },
+  lux: {
+    "red-cedar-black": "/images/everglow_infrared/lux-redcedarblack.webp",
+    "red-cedar-natural": "/images/everglow_infrared/lux-redcedarnatural.webp",
+    "hemlock-black": "/images/everglow_infrared/lux-hemlockblack.webp",
+    "hemlock-natural": "/images/everglow_infrared/lux-hemlocknatural.webp",
+  },
+  grande: {
+    "red-cedar-black": "/images/everglow_infrared/grande-redcedarblack.webp",
+    "red-cedar-natural": "/images/everglow_infrared/grande-redcedarnatural.webp",
+    "hemlock-black": "/images/everglow_infrared/grande_hemlockblack.webp",
+    "hemlock-natural": "/images/everglow_infrared/grande-hemlocknatural.webp",
+  },
+};
 
 function parsePrice(value: string) {
   return Number(value.replace(/[^0-9.]/g, ""));
+}
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("en-AU", {
+    style: "currency",
+    currency: "AUD",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function getCartProductDetails(sku: string, fallbackPrice: string) {
+  const skuPrefix = `${everglowProductDetail.sku}-`;
+
+  if (!sku.startsWith(skuPrefix)) {
+    return {
+      imageSrc: "/images/productpage_everglow/MHCSauna-47.jpg",
+      compareAtPrice: "",
+      price: fallbackPrice,
+      title: "Masseuse Health Co. product",
+      details: [sku],
+    };
+  }
+
+  const skuConfiguration = sku.slice(skuPrefix.length);
+  const size = everglowProductDetail.sizes.find((candidate) =>
+    skuConfiguration.startsWith(`${candidate.id}-`),
+  )!;
+  const finishId = skuConfiguration.slice(`${size.id}-`.length);
+  const finish = everglowProductDetail.finishes.find((candidate) =>
+    finishId.startsWith(candidate.id),
+  )!;
+  const hasRedLight = finishId.endsWith("-RLT");
+  const compareAtPrice = formatCurrency(
+    size.compareAtAud +
+      (hasRedLight ? everglowProductDetail.redLightAddOn.priceAud : 0),
+  );
+
+  return {
+    imageSrc: cartProductImages[size.id][finish.id],
+    compareAtPrice,
+    price: fallbackPrice,
+    title: `${everglowProductDetail.title} ${size.label}`,
+    details: [
+      finish.label,
+      size.dimensionsLabel,
+      hasRedLight ? everglowProductDetail.redLightAddOn.title : null,
+    ].filter(Boolean),
+  };
 }
 
 type HeaderCartButtonProps = {
@@ -117,44 +196,71 @@ export function HeaderCartDrawer() {
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {items.map((item) => (
-                <article
-                  key={item.sku}
-                  className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+            <div className="space-y-5">
+              {items.map((item) => {
+                const product = getCartProductDetails(item.sku, item.price);
+
+                return (
+                  <article
+                    key={item.sku}
+                    className="grid overflow-hidden border border-slate-200 bg-white shadow-sm sm:grid-cols-[9rem_1fr]"
+                  >
+                    <div className="relative min-h-44 bg-slate-100">
+                      <Image
+                        src={product.imageSrc}
+                        alt={product.title}
+                        fill
+                        sizes="144px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex min-w-0 flex-col p-4">
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-slate-400">
                         {item.sku}
                       </p>
-                      <h3 className="mt-2 text-lg font-semibold text-slate-950">
-                        {item.name}
+                      <h3 className="mt-2 text-lg font-bold leading-tight tracking-[-0.03em] text-slate-950">
+                        {product.title}
                       </h3>
+                      <div className="mt-3 space-y-1">
+                        {product.details.map((detail) => (
+                          <p key={detail} className="text-sm font-medium text-slate-600">
+                            {detail}
+                          </p>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex flex-wrap items-end gap-2">
+                        {product.compareAtPrice ? (
+                          <span className="text-sm font-bold text-slate-400 line-through">
+                            {product.compareAtPrice}
+                          </span>
+                        ) : null}
+                        <span className="text-2xl font-bold leading-none tracking-[-0.05em] text-[#00e05a]">
+                          {product.price}
+                        </span>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-3">
+                        <p className="text-sm font-semibold text-slate-700">
+                          Quantity {item.quantity}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => removeItem(item.sku)}
+                          className="text-sm font-semibold text-slate-500 transition hover:text-slate-950"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
-                    <p className="text-sm font-semibold text-slate-950">
-                      {item.price}
-                    </p>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <p className="text-sm text-slate-600">Qty {item.quantity}</p>
-                    <button
-                      type="button"
-                      onClick={() => removeItem(item.sku)}
-                      className="text-sm font-medium text-slate-500 transition hover:text-slate-950"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           )}
         </div>
 
         <div className="border-t border-slate-200 px-6 py-5">
           <div className="flex items-center justify-between text-sm text-slate-600">
-            <span>Mock subtotal</span>
+            <span>Subtotal</span>
             <span className="text-lg font-semibold text-slate-950">
               ${subtotal.toLocaleString()}
             </span>
