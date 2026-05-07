@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -55,12 +55,9 @@ const sizeCardImages: Record<EverglowSizeId, string> = {
   grande: "/images/MHCSauna-40.jpg",
 };
 
-const finishTextColors: Record<EverglowFinishId, string> = {
-  "red-cedar-black": "text-[#7a3f1f]",
-  "red-cedar-natural": "text-[#c8874a]",
-  "hemlock-black": "text-[#7c6a49]",
-  "hemlock-natural": "text-[#b58a48]",
-};
+const featureCardOrder = [
+  0, 16, 10, 3, 12, 6, 14, 1, 11, 8, 15, 4, 13, 2, 9, 5, 7,
+] as const;
 
 type GalleryColumnProps = {
   sizeId: EverglowSizeId;
@@ -72,26 +69,104 @@ function GalleryColumn({ sizeId, finishId }: GalleryColumnProps) {
   const selectedFinish = everglowProductDetail.finishes.find((finish) => finish.id === finishId)!;
   const selectedImage = configurationImages[sizeId][finishId];
 
+  const fadeFallbackRef = useRef<ReturnType<typeof globalThis.setTimeout> | null>(null);
+
+  const [displaySrc, setDisplaySrc] = useState(selectedImage);
+  const [imageVisible, setImageVisible] = useState(true);
+
+  const finishImageSwap = useCallback((nextSrc: string) => {
+    if (fadeFallbackRef.current !== null) {
+      globalThis.clearTimeout(fadeFallbackRef.current);
+      fadeFallbackRef.current = null;
+    }
+
+    setDisplaySrc(nextSrc);
+
+    requestAnimationFrame(() => {
+      setImageVisible(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedImage === displaySrc) {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const frame = requestAnimationFrame(() => {
+        setDisplaySrc(selectedImage);
+        setImageVisible(true);
+      });
+
+      return () => cancelAnimationFrame(frame);
+    }
+
+    if (fadeFallbackRef.current !== null) {
+      globalThis.clearTimeout(fadeFallbackRef.current);
+      fadeFallbackRef.current = null;
+    }
+
+    const frame = requestAnimationFrame(() => {
+      setImageVisible(false);
+
+      fadeFallbackRef.current = globalThis.setTimeout(() => {
+        fadeFallbackRef.current = null;
+        finishImageSwap(selectedImage);
+      }, 230);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+
+      if (fadeFallbackRef.current !== null) {
+        globalThis.clearTimeout(fadeFallbackRef.current);
+        fadeFallbackRef.current = null;
+      }
+    };
+  }, [selectedImage, displaySrc, finishImageSwap]);
+
+  const handleImageTransitionEnd = useCallback(
+    (event: React.TransitionEvent<HTMLDivElement>) => {
+      if (event.propertyName !== "opacity") {
+        return;
+      }
+
+      if (imageVisible) {
+        return;
+      }
+
+      finishImageSwap(selectedImage);
+    },
+    [imageVisible, selectedImage, finishImageSwap],
+  );
+
   return (
     <div className="space-y-3 lg:sticky lg:top-24 lg:self-start">
-      <div>
-        <Image
-          src={selectedImage}
-          alt={`Everglow ${selectedSize.label} Infrared Sauna in ${selectedFinish.label}`}
-          width={1200}
-          height={1200}
-          priority
-          sizes="(min-width: 1024px) 48vw, 100vw"
-          className="h-auto w-full object-contain"
-        />
-        <div className="mt-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Selected configuration
-          </p>
-          <p className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xl font-semibold tracking-[-0.04em] sm:text-2xl">
-            <span className="text-slate-950">Everglow {selectedSize.label}</span>
-            <span className={finishTextColors[finishId]}>{selectedFinish.label}</span>
-          </p>
+      <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
+        <div
+          className={`transition-opacity duration-150 ease-out will-change-[opacity] ${
+            imageVisible ? "opacity-100" : "opacity-20"
+          }`}
+          onTransitionEnd={handleImageTransitionEnd}
+        >
+          <div
+            className={`transition-[filter] ease-out will-change-[filter] ${
+              imageVisible
+                ? "blur-0 delay-0 duration-[140ms]"
+                : "blur-[10px] delay-[55ms] duration-[95ms] ease-in"
+            }`}
+          >
+            <Image
+              key={displaySrc}
+              src={displaySrc}
+              alt={`Everglow ${selectedSize.label} Infrared Sauna in ${selectedFinish.label}`}
+              width={1200}
+              height={1200}
+              priority
+              sizes="(min-width: 1024px) 48vw, 100vw"
+              className="h-auto w-full object-contain"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -176,7 +251,7 @@ export function EverglowProductView() {
   const featureTrackRef = useRef<HTMLDivElement>(null);
   const selectedSize = everglowProductDetail.sizes.find((size) => size.id === sizeId)!;
   const selectedFinishMaterial = finishId.startsWith("red-cedar") ? "Red Cedar" : "Hemlock";
-  const featureScrollCards = [
+  const orderedFeatureScrollCards = [
     ...everglowProductDetail.featuresDetailed.map((body) => ({
       eyebrow: "Feature",
       title: body,
@@ -187,7 +262,14 @@ export function EverglowProductView() {
       title: item.title,
       body: item.body,
     })),
+    {
+      eyebrow: "Community",
+      title: "Trusted by 30,000+ Aussies",
+      body:
+        "From home wellness spaces to performance recovery routines, thousands of Australians trust Masseuse Health Co. to support better daily recovery.",
+    },
   ];
+  const featureScrollCards = featureCardOrder.map((index) => orderedFeatureScrollCards[index]);
 
   useEffect(() => {
     const revealElements = Array.from(
@@ -246,12 +328,12 @@ export function EverglowProductView() {
           ease: "none",
           scrollTrigger: {
             trigger: section,
-            start: "top top",
+            start: "top 12%",
             end: () => `+=${getScrollAmount()}`,
             pin: true,
             pinSpacing: true,
-            scrub: 1,
-            anticipatePin: 1,
+            scrub: 0.7,
+            anticipatePin: 1.5,
             invalidateOnRefresh: true,
           },
         });
@@ -269,108 +351,105 @@ export function EverglowProductView() {
     <>
       <section
         id="overview"
-        className="border-b border-black/5 bg-[radial-gradient(circle_at_50%_0%,_#f4f7fb_0%,_#fff_42%,_#fff_100%)]"
+        className="bg-[radial-gradient(circle_at_50%_0%,_#f4f7fb_0%,_#fff_42%,_#fff_100%)]"
       >
-        <div className="w-full px-4 pb-8 pt-32 sm:px-6 sm:pt-36 lg:px-8">
-          <div id="models" className="mt-14">
+        <div className="w-full px-4 pb-8 pt-24 sm:px-6 sm:pt-28 lg:px-8">
+          <div id="models" className="mt-8">
             <div className="max-w-none">
-              <h2 className="text-4xl font-semibold leading-none tracking-[-0.055em] text-slate-950 lg:whitespace-nowrap lg:text-6xl">
-                Meet the Everglow Infrared Sauna, refined for every recovery space.
+              <h2 className="everglow-intro-title-enter max-w-full break-words text-4xl font-medium leading-none tracking-[-0.055em] text-slate-950 lg:text-6xl">
+                <span className="block">Meet the Everglow Infrared Sauna,</span>
+                <span className="block">refined for every recovery space.</span>
               </h2>
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600 sm:text-xl">
+              <p className="everglow-intro-copy-enter mt-6 max-w-3xl text-lg leading-8 text-slate-600 sm:text-xl">
                 Premium infrared heat, Canadian timber, chromotherapy, Bluetooth audio,
                 and precise digital control in a sauna built for modern homes.
               </p>
             </div>
-            <div data-model-card-grid className="mt-12 grid gap-0 lg:grid-cols-3">
-              {everglowProductDetail.sizes.map((size, index) => (
-                <article
-                  key={size.id}
-                  data-model-card
-                  className={`flex min-h-[42rem] flex-col bg-white transition duration-300 hover:bg-slate-50 ${
-                    index > 0 ? "lg:border-l lg:border-slate-200" : ""
-                  }`}
-                >
-                  <div className="relative h-[30rem] shrink-0 overflow-hidden bg-slate-100 lg:h-[66%]">
-                    <Image
-                      src={sizeCardImages[size.id]}
-                      alt={`Everglow ${size.label} infrared sauna`}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, 100vw"
-                      className={`object-cover ${
-                        size.id === "zen"
-                          ? "object-[50%_24%]"
-                          : size.id === "lux"
-                            ? "scale-[1.04]"
-                            : ""
-                      }`}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
-                  </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <p className="text-xl font-bold uppercase tracking-[0.04em] text-slate-950 sm:text-2xl">
-                      Everglow {size.label}
-                    </p>
-                    <p className="mt-6 text-base leading-7 text-slate-600">{size.positioning}</p>
-                    <dl className="mt-auto space-y-4 border-t border-slate-200 pt-6 text-sm">
-                      <div>
-                        <dt className="font-semibold text-slate-950">Dimensions</dt>
-                        <dd className="mt-1 text-slate-600">{size.dimensionsLabel}</dd>
-                      </div>
-                      <div>
-                        <dt className="font-semibold text-slate-950">Best for</dt>
-                        <dd className="mt-1 text-slate-600">{size.capacity}</dd>
-                      </div>
-                    </dl>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <div className="mx-auto mt-12 max-w-xl text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Sauna type
-              </p>
-              <p className="mt-1 text-sm text-slate-600">
-                Choose the infrared sauna format first.
-              </p>
-              <div
-                role="tablist"
-                aria-label="Choose Everglow infrared sauna size"
-                className="mx-auto mt-4 grid max-w-md grid-cols-3 rounded-full bg-slate-100 p-1"
-              >
-                {everglowProductDetail.sizes.map((size) => {
-                  const isSelected = sizeId === size.id;
+            <p className="mt-12 text-right text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Select your Sauna
+            </p>
+            <div
+              data-model-card-grid
+              className="mt-4 grid gap-0 lg:grid-cols-3"
+              aria-label="Choose Everglow infrared sauna size"
+            >
+              {everglowProductDetail.sizes.map((size, index) => {
+                const isSelected = sizeId === size.id;
 
-                  return (
-                    <button
-                      key={size.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={isSelected}
-                      onClick={() => setSizeId(size.id)}
-                      className={`rounded-full px-3 py-3 text-center text-sm font-semibold transition ${
-                        isSelected
-                          ? "bg-slate-950 text-white shadow-[0_12px_30px_rgba(15,23,42,0.2)]"
-                          : "text-slate-600 hover:bg-white hover:text-slate-950"
-                      }`}
-                    >
-                      {size.label}
-                    </button>
-                  );
-                })}
-              </div>
+                return (
+                  <div
+                    key={size.id}
+                    data-model-card
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isSelected}
+                    onClick={() => setSizeId(size.id)}
+                    onKeyDown={(event) => {
+                      if (event.key !== "Enter" && event.key !== " ") {
+                        return;
+                      }
+                      event.preventDefault();
+                      setSizeId(size.id);
+                    }}
+                    className={`group flex min-h-[42rem] cursor-pointer flex-col bg-white text-left transition duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 ${
+                      isSelected
+                        ? "relative z-10 shadow-[0_24px_80px_rgba(15,23,42,0.14)]"
+                        : "opacity-55 grayscale hover:opacity-85 hover:grayscale-0"
+                    } ${index > 0 ? "lg:border-l lg:border-slate-200" : ""}`}
+                  >
+                    <div className="relative h-[30rem] shrink-0 overflow-hidden bg-slate-100 lg:h-[66%]">
+                      <Image
+                        src={sizeCardImages[size.id]}
+                        alt={`Everglow ${size.label} infrared sauna`}
+                        fill
+                        sizes="(min-width: 1024px) 33vw, 100vw"
+                        className={`object-cover transition duration-300 ${
+                          size.id === "zen"
+                            ? "object-[50%_24%]"
+                            : size.id === "lux"
+                              ? "scale-[1.04]"
+                              : ""
+                        }`}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
+                      {isSelected ? (
+                        <span className="absolute right-4 top-4 bg-slate-950 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-white">
+                          Selected
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="flex flex-1 flex-col p-6 pb-14">
+                      <p className="text-xl font-bold uppercase tracking-[0.04em] text-slate-950 sm:text-2xl">
+                        Everglow {size.label}
+                      </p>
+                      <p className="mt-2 text-base leading-7 text-slate-600">{size.positioning}</p>
+                      <dl className="mt-auto space-y-4 border-t border-slate-200 pt-6 text-sm">
+                        <div>
+                          <dt className="font-semibold text-slate-950">Dimensions</dt>
+                          <dd className="mt-1 text-slate-600">{size.dimensionsLabel}</dd>
+                        </div>
+                        <div>
+                          <dt className="font-semibold text-slate-950">Best for</dt>
+                          <dd className="mt-1 text-slate-600">{size.capacity}</dd>
+                        </div>
+                      </dl>
+                      <div className="h-16 shrink-0" aria-hidden="true" />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           <div
             id="buy"
-            className="mt-14 grid gap-0 lg:grid-cols-[minmax(0,0.95fr)_minmax(380px,1.05fr)] lg:items-start"
+            className="mt-24 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)] lg:items-start lg:gap-10"
           >
             <GalleryColumn
               sizeId={sizeId}
               finishId={finishId}
             />
-            <div className="border border-slate-200/80 bg-white/82 p-6 shadow-[0_30px_100px_rgba(15,23,42,0.08)] backdrop-blur sm:p-8">
+            <div className="rounded-2xl border border-slate-200/80 bg-white/82 p-6 shadow-[0_30px_100px_rgba(15,23,42,0.08)] backdrop-blur sm:p-8">
               <EverglowBuyBox
                 sizeId={sizeId}
                 finishId={finishId}
@@ -429,29 +508,26 @@ export function EverglowProductView() {
         </div>
       </section>
 
-      <div className="w-full py-20">
+      <div className="w-full py-[clamp(3rem,7vh,5rem)]">
         <section
           ref={featureScrollSectionRef}
           id="features"
           aria-labelledby="features-heading"
-          className="flex min-h-screen scroll-mt-32 items-center overflow-hidden"
+          className="flex min-h-[calc(100svh-clamp(6rem,14vh,10rem))] scroll-mt-28 items-center overflow-hidden"
         >
-          <div className="w-full space-y-12">
+          <div className="w-full space-y-[clamp(2rem,5vh,3rem)]">
             <div className="mx-auto max-w-4xl text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-                Features
-              </p>
               <h2
                 id="features-heading"
-                className="mt-4 text-3xl font-semibold leading-none tracking-[-0.05em] text-slate-950 sm:text-4xl lg:text-5xl"
+                className="text-[clamp(2rem,4.2vw,3rem)] font-semibold leading-none tracking-[-0.05em] text-slate-950"
               >
-                Every detail has a job.
+                Designed for how people actually live. Purpose built in every Detail.
               </h2>
             </div>
-            <div className="w-screen overflow-hidden">
+            <div className="w-screen overflow-hidden px-4 sm:px-6 lg:px-8">
               <div
                 ref={featureTrackRef}
-                className="relative -left-[24vw] flex w-max flex-col gap-4 will-change-transform lg:gap-6"
+                className="flex w-max flex-col gap-4 will-change-transform lg:gap-6"
               >
                 {[0, 1].map((rowIndex) => (
                   <div
@@ -468,18 +544,15 @@ export function EverglowProductView() {
                         return (
                           <article
                             key={`${card.eyebrow}-${card.title}`}
-                            className="flex h-72 w-[min(82vw,28rem)] shrink-0 flex-col justify-between bg-slate-950 p-8 text-white shadow-[0_18px_50px_rgba(15,23,42,0.12)] lg:h-96 lg:w-[clamp(28rem,36vw,36rem)] lg:p-10"
+                            className="flex h-[clamp(16rem,34vh,18rem)] w-[min(82vw,28rem)] shrink-0 flex-col justify-between bg-slate-950 p-8 text-white shadow-[0_18px_50px_rgba(15,23,42,0.12)] lg:h-[clamp(17rem,32vh,22rem)] lg:w-[clamp(28rem,36vw,36rem)] lg:p-10"
                           >
                             <div className="flex items-center justify-between gap-6">
                               <span className="text-sm font-semibold uppercase tracking-[0.24em] text-white/38">
                                 {String(featureNumber).padStart(2, "0")}
                               </span>
-                              <span className="text-right text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[#27C8E6]">
-                                {card.eyebrow}
-                              </span>
                             </div>
                             <div>
-                              <h3 className="max-w-xl text-2xl font-semibold leading-tight tracking-[-0.04em] lg:text-3xl">
+                              <h3 className="max-w-xl text-xl font-medium leading-tight tracking-[-0.04em] lg:text-2xl">
                                 {card.title}
                               </h3>
                               {card.body ? (
@@ -506,12 +579,12 @@ export function EverglowProductView() {
             >
               Dimensions & weight
             </h2>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
+            <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
               Dimensions and approximate weight are shown for your selected model and finish.
             </p>
             <div className="mt-8 overflow-x-auto border border-slate-200">
-            <table className="w-full min-w-[640px] border-separate border-spacing-y-2 text-left text-sm">
-              <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <table className="w-full min-w-[640px] border-separate border-spacing-y-2 text-left text-base">
+              <thead className="bg-slate-50 text-sm font-semibold uppercase tracking-wider text-slate-500">
                 <tr>
                   <th className="px-4 py-3">Size</th>
                   <th className="px-4 py-3">Width</th>
@@ -536,7 +609,7 @@ export function EverglowProductView() {
                           : "font-medium"
                       }`}
                     >
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4">
                         <div className="flex flex-wrap items-center gap-2">
                           <span>{size.label}</span>
                           {isSelected ? (
@@ -546,10 +619,10 @@ export function EverglowProductView() {
                           ) : null}
                         </div>
                       </td>
-                      <td className="px-4 py-3">{size.dimensions.wCm} cm</td>
-                      <td className="px-4 py-3">{size.dimensions.hCm} cm</td>
-                      <td className="px-4 py-3">{size.dimensions.dCm} cm</td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4">{size.dimensions.wCm} cm</td>
+                      <td className="px-4 py-4">{size.dimensions.hCm} cm</td>
+                      <td className="px-4 py-4">{size.dimensions.dCm} cm</td>
+                      <td className="px-4 py-4">
                         {redCedarWeight ? `${redCedarWeight.weightKg} kg` : "TBC"}
                       </td>
                     </tr>
@@ -567,13 +640,13 @@ export function EverglowProductView() {
             >
               Electrical
             </h2>
-            <p className="mt-4 text-sm leading-7 text-slate-600 lg:whitespace-nowrap">
+            <p className="mt-4 text-base leading-8 text-slate-600 sm:text-lg lg:whitespace-nowrap">
               Power requirements vary by size and timber selection. Confirm final
               installation requirements for the configuration you choose.
             </p>
             <div className="mt-8 overflow-x-auto border border-slate-200">
-            <table className="w-full min-w-[640px] border-separate border-spacing-y-2 text-left text-sm">
-              <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <table className="w-full min-w-[640px] border-separate border-spacing-y-2 text-left text-base">
+              <thead className="bg-slate-50 text-sm font-semibold uppercase tracking-wider text-slate-500">
                 <tr>
                   <th className="px-4 py-3">Size</th>
                   <th className="px-4 py-3">Finish</th>
@@ -599,7 +672,7 @@ export function EverglowProductView() {
                           : "font-medium"
                       }`}
                     >
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4">
                         <div className="flex flex-wrap items-center gap-2">
                           <span>{row.size}</span>
                           {isSelected ? (
@@ -609,20 +682,20 @@ export function EverglowProductView() {
                           ) : null}
                         </div>
                       </td>
-                      <td className="px-4 py-3">{row.finish}</td>
-                      <td className="px-4 py-3">{row.weightKg} kg</td>
-                      <td className="px-4 py-3">{row.powerW}</td>
-                      <td className="px-4 py-3">{row.voltage}</td>
-                      <td className="px-4 py-3">{row.amps}</td>
-                      <td className="px-4 py-3">{row.fuseType}</td>
-                      <td className="px-4 py-3 capitalize">{row.phase}</td>
+                      <td className="px-4 py-4">{row.finish}</td>
+                      <td className="px-4 py-4">{row.weightKg} kg</td>
+                      <td className="px-4 py-4">{row.powerW}</td>
+                      <td className="px-4 py-4">{row.voltage}</td>
+                      <td className="px-4 py-4">{row.amps}</td>
+                      <td className="px-4 py-4">{row.fuseType}</td>
+                      <td className="px-4 py-4 capitalize">{row.phase}</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
-          <p className="mt-6 text-sm italic text-slate-500">
+          <p className="mt-6 text-base italic leading-7 text-slate-500">
             {everglowProductDetail.electricianNote}
           </p>
           </section>

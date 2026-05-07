@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
 
 import { CartProvider } from "@/components/cart-provider";
 import { CustomCursor } from "@/components/custom-cursor";
@@ -7,13 +6,6 @@ import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 import { siteConfig } from "@/lib/site-content";
 
 import "./globals.css";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-  variable: "--font-manrope",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
@@ -50,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} bg-white font-sans text-slate-950 antialiased`}>
+      <body className="bg-white text-slate-950 antialiased">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-slate-950 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"

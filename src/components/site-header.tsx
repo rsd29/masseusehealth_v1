@@ -222,7 +222,7 @@ export function SiteHeader({ overlay = false }: SiteHeaderProps) {
         className={`${overlay ? "fixed inset-x-0" : "sticky"} top-0 z-50 border-b transition-all duration-300 ${
           isScrolled
             ? "border-white/10 bg-black/70 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl"
-            : "border-white/10 bg-black/55 backdrop-blur-xl"
+            : "border-white/10 bg-black/95 backdrop-blur-xl"
         }`}
       >
         <div

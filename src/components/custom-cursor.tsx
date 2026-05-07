@@ -37,8 +37,8 @@ export function CustomCursor() {
         const currentPosition = currentPositionRef.current;
         const targetPosition = targetPositionRef.current;
 
-        currentPosition.x += (targetPosition.x - currentPosition.x) * 0.18;
-        currentPosition.y += (targetPosition.y - currentPosition.y) * 0.18;
+        currentPosition.x += (targetPosition.x - currentPosition.x) * 0.24;
+        currentPosition.y += (targetPosition.y - currentPosition.y) * 0.24;
 
         cursor.style.transform = `translate3d(${currentPosition.x}px, ${currentPosition.y}px, 0) translate(-50%, -50%)`;
       }

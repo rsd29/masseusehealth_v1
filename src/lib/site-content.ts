@@ -136,11 +136,6 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
-    label: "For Clinics",
-    href: "#for-business",
-    disabled: true,
-  },
-  {
     label: "Info",
     href: "#resources",
     disabled: true,

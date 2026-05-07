@@ -103,6 +103,24 @@ export function EverglowBuyBox({
     [includeRedLight, size.saleAud],
   );
 
+  const compareTotalPrice = useMemo(
+    () =>
+      formatCurrency(
+        size.compareAtAud +
+          (includeRedLight ? everglowProductDetail.redLightAddOn.priceAud : 0),
+      ),
+    [includeRedLight, size.compareAtAud],
+  );
+
+  const savingsPercent = useMemo(() => {
+    if (size.compareAtAud <= 0) {
+      return 0;
+    }
+    return Math.round(
+      ((size.compareAtAud - size.saleAud) / size.compareAtAud) * 100,
+    );
+  }, [size.compareAtAud, size.saleAud]);
+
   const cartName = `${everglowProductDetail.title} - ${size.label} / ${finishLabel}${
     includeRedLight ? " + Red Light Therapy Panel" : ""
   }`;
@@ -150,25 +168,12 @@ export function EverglowBuyBox({
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+      <h1 className="text-4xl font-medium tracking-tight text-slate-950 sm:text-5xl">
         {everglowProductDetail.title}
       </h1>
-
-      <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span className="relative inline-flex text-2xl font-bold tracking-[-0.05em] text-slate-400 tabular-nums sm:text-3xl">
-          {size.compareAtPrice}
-          <span
-            className="absolute left-[-0.08em] top-1/2 h-1 w-[calc(100%+0.16em)] -translate-y-1/2 bg-slate-950"
-            aria-hidden="true"
-          />
-        </span>
-        <span className="inline-flex items-center gap-2.5 text-3xl font-bold tracking-[-0.055em] text-[#00e05a] tabular-nums sm:text-4xl">
-          <span>{size.price}</span>
-          <span className="inline-flex rounded-none bg-[#168a42] px-2 py-1 text-xs font-semibold uppercase leading-none tracking-[-0.02em] text-white">
-            Save {size.savings}
-          </span>
-        </span>
-      </div>
+      <p className="mt-3 text-sm font-semibold text-green-600">
+        Available in Stock
+      </p>
 
       <ul ref={featureListRef} className="mt-8 space-y-4 text-base leading-8 text-slate-700 sm:text-lg sm:leading-9">
         {everglowProductDetail.heroBullets.map((line, index) => (
@@ -264,12 +269,24 @@ export function EverglowBuyBox({
         </button>
       </div>
 
-      <p className="mt-2 text-xs text-slate-500">
-        Selection: {size.label} / {finishLabel}
-        {includeRedLight ? " / Red Light Therapy Panel" : ""}
-      </p>
+      <div className="mt-8 space-y-5">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="text-4xl font-semibold leading-none tracking-[-0.065em] text-slate-400 tabular-nums line-through decoration-slate-400/70 sm:text-5xl">
+            {compareTotalPrice}
+          </span>
+          <span className="text-4xl font-semibold leading-none tracking-[-0.065em] text-red-600 tabular-nums sm:text-5xl">
+            {totalPrice}
+          </span>
+          {savingsPercent > 0 ? (
+            <span
+              className="inline-flex h-11 shrink-0 items-center justify-center self-center rounded-none bg-red-600 px-3 text-sm font-bold uppercase tabular-nums tracking-tight text-white"
+              aria-label={`Save ${savingsPercent}% compared to retail price`}
+            >
+              {savingsPercent}% Off
+            </span>
+          ) : null}
+        </div>
 
-      <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <AddToCartButton
             sku={`${everglowProductDetail.sku}-${size.id}-${finishId}${
@@ -278,16 +295,7 @@ export function EverglowBuyBox({
             name={cartName}
             price={totalPrice}
           />
-          <span
-            className="inline-flex h-14 cursor-not-allowed select-none items-center justify-center rounded-md border border-slate-200 px-8 text-base font-semibold text-slate-400"
-            aria-disabled="true"
-          >
-            Request a callback
-          </span>
         </div>
-        <p className="text-4xl font-semibold leading-none tracking-[-0.065em] text-slate-950 sm:text-5xl">
-          {totalPrice}
-        </p>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3" aria-label="Accepted payment methods">
