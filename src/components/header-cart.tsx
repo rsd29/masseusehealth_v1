@@ -165,7 +165,7 @@ export function HeaderCartDrawer() {
       >
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-600">
               Cart
             </p>
             <h2
@@ -215,7 +215,7 @@ export function HeaderCartDrawer() {
                       />
                     </div>
                     <div className="flex min-w-0 flex-col p-4">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-slate-400">
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-slate-600">
                         {item.sku}
                       </p>
                       <h3 className="mt-2 text-lg font-bold leading-tight tracking-[-0.03em] text-slate-950">
@@ -230,7 +230,7 @@ export function HeaderCartDrawer() {
                       </div>
                       <div className="mt-4 flex flex-wrap items-end gap-2">
                         {product.compareAtPrice ? (
-                          <span className="text-sm font-bold text-slate-400 line-through">
+                          <span className="text-sm font-bold text-slate-600 line-through">
                             {product.compareAtPrice}
                           </span>
                         ) : null}
